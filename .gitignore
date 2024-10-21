@@ -24,3 +24,5 @@
 /assets/vendor/
 .idea/
 ###< symfony/asset-mapper ###
+
+/public/uploads
