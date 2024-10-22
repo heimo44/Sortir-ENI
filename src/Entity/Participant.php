@@ -3,17 +3,27 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    /**
+     * @var list<string> The user roles
+     */
+    #[ORM\Column]
+    private array $roles = [];
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -27,8 +37,11 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $motPasse = null;
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column(length: 4000)]
+    private ?string $password = null;
 
     #[ORM\Column]
     private ?bool $administrateur = null;
@@ -106,18 +119,6 @@ class Participant
     public function setMail(string $mail): static
     {
         $this->mail = $mail;
-
-        return $this;
-    }
-
-    public function getMotPasse(): ?string
-    {
-        return $this->motPasse;
-    }
-
-    public function setMotPasse(string $motPasse): static
-    {
-        $this->motPasse = $motPasse;
 
         return $this;
     }
@@ -211,4 +212,58 @@ class Participant
 
         return $this;
     }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     *
+     *
+     */
+    public function eraseCredentials(): string
+    {
+        return (string)$this->mail;
+    }
+
+ /**
+     * @see UserInterface
+     *
+     * @return list<string>
+     */
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->mail;
+    }
 }
+
+
