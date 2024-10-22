@@ -1,3 +1,23 @@
 body {
-    background-color: skyblue;
+    background-color: rgba(95, 158, 160, 0.4);
+}
+
+.navbar{
+    background-color: aqua;
+
+
+}
+.nav-link{
+    color: black;
+    font-size: 1.5em;
+    font-weight: 900;
+}
+.footer {
+    text-align: center;
+    padding: 10px;
+    color: black;
+    font-size: 1em;
+    background-color: aqua;
+    font-weight: 700;
+    margin-top: auto; /* Pour pousser le footer en bas */
 }

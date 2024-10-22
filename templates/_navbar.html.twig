@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg navbar-light">
+    <img src="{{ asset('img/logo_application_sortir_2.png') }}" alt="Image pour sortir" width="110" height="110">
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item item">
+                <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_home') }}">Villes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_home') }}">Campus</a>
+            </li>
+            {% if app.user %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_home') }}">Mon profil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_home') }}">Se déconnecter</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_home') }}">Se connecter</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
