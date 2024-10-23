@@ -35,7 +35,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $telephone = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $mail = null;
+    private ?string $email = null;
 
     /**
      * @var string The hashed password
@@ -111,14 +111,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMail(): ?string
+    public function getEmail(): ?string
     {
-        return $this->mail;
+        return $this->email;
     }
 
-    public function setMail(string $mail): static
+    public function setEmail(string $email): static
     {
-        $this->mail = $mail;
+        $this->email = $email;
 
         return $this;
     }
@@ -235,7 +235,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): string
     {
-        return (string)$this->mail;
+        return (string)$this->email;
     }
 
  /**
@@ -262,7 +262,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->mail;
+        return (string) $this->email;
     }
 }
 
