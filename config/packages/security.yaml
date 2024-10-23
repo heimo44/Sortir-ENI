@@ -17,6 +17,10 @@ security:
             lazy: true
             provider: users_in_memory
             custom_authenticator: App\Security\AppAuthenticator
+            entry_point: form_login
+            form_login:
+                login_path: app_login
+                check_path: app_login
             logout:
                 path: app_logout
             remember_me:
