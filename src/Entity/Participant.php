@@ -25,22 +25,22 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 180)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 180)]
     private ?string $prenom = null;
 
     #[ORM\Column]
     private ?int $telephone = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 180)]
     private ?string $email = null;
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column(length: 4000)]
+    #[ORM\Column]
     private ?string $password = null;
 
     #[ORM\Column]
@@ -233,9 +233,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      *
      *
      */
-    public function eraseCredentials(): string
+    public function eraseCredentials(): void
     {
-        return (string)$this->email;
     }
 
  /**
@@ -245,7 +244,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles= $this->roles;
+        $roles[]='ROLE_USER';
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): static

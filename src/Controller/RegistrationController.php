@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 
-use App\Form\LoginType;
+use App\Form\RegistrationType;
 
 use App\Security\AppAuthenticator;
 
@@ -16,13 +16,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-class LoginController extends AbstractController
+class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
         $participant = new Participant();
-        $form = $this->createForm(LoginType::class, $participant);
+        $form = $this->createForm(RegistrationType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
