@@ -26,22 +26,22 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(length: 180)]
-    private ?string $nom = null;
+    private ?string $Lastname = null;
 
     #[ORM\Column(length: 180)]
-    private ?string $prenom = null;
+    private ?string $Firstname= null;
 
     #[ORM\Column]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    private ?string $email;
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
-    private ?string $password = null;
+    private ?string $password;
 
 
     #[ORM\Column]
@@ -73,26 +73,26 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getLastName(): ?string
     {
-        return $this->nom;
+        return $this->Lastname;
     }
 
-    public function setNom(string $nom): static
+    public function setLastname(string $Lastname): static
     {
-        $this->nom = $nom;
+        $this->Lastname = $Lastname;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getFirstname(): ?string
     {
-        return $this->prenom;
+        return $this->Firstname;
     }
 
-    public function setPrenom(string $prenom): static
+    public function setFirstName(string $Firstname): static
     {
-        $this->prenom = $prenom;
+        $this->Firstname = $Firstname;
 
         return $this;
     }
@@ -249,7 +249,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 }
 

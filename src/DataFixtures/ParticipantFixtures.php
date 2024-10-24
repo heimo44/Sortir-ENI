@@ -17,30 +17,30 @@ class ParticipantFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $participant= new Participant();
-        $participant->setEmail("admin@sortir.fr");
-        $participant->setNom("admin");
-        $participant->setPrenom("admin");
-        $participant->setTelephone("0606060606");
-        $participant->setPassword($this->passwordHarsher->hashPassword($participant, "123456"));
-        $participant->setAdministrateur(true);
-        $participant->setActif(true);
-        $participant->setRoles(['ROLE_ADMIN']);
+        $user= new Participant();
+        $user->setEmail("admin@sortir.fr");
+        $user->setLastname("admin");
+        $user->setFirstName("admin");
+        $user->setTelephone("0606060606");
+        $user->setPassword($this->passwordHarsher->hashPassword($user, "123456"));
 
-        $manager->persist($participant);
+        $user->setActif(true);
+        $user->setRoles(['ROLE_ADMIN']);
+
+        $manager->persist($user);
 
         for($i = 1 ; $i <= 5 ; $i++) {
-            $participant = new Participant();
-            $participant->setEmail("participant$i@sortir.fr");
-            $participant->setNom("participant$i");
-            $participant->setPrenom("participant$i");
-            $participant->setTelephone("0606060606");
-            $participant->setPassword($this->passwordHarsher->hashPassword($participant, "123456"));
-            $participant->setAdministrateur(false);
-            $participant->setActif(true);
-            $participant->setRoles(['ROLE_USER']);
-            $manager->persist($participant);
-            $this->addReference("user$i", $participant);
+            $user = new Participant();
+            $user->setEmail("participant$i@sortir.fr");
+            $user->setLastname("participant$i");
+            $user->setFirstName("participant$i");
+            $user->setTelephone("0606060606");
+            $user->setPassword($this->passwordHarsher->hashPassword($user, "123456"));
+
+            $user->setActif(true);
+            $user->setRoles(['ROLE_USER']);
+            $manager->persist($user);
+            $this->addReference("user$i", $user);
         }
 
         $manager->flush();
