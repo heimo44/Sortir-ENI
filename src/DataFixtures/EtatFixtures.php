@@ -6,7 +6,7 @@ use App\Entity\Etat;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class EtatFixture extends Fixture
+class EtatFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -15,6 +15,9 @@ class EtatFixture extends Fixture
             $etat = new Etat();
             $etat->setLibelle($libelle);
             $manager->persist($etat);
+
+            // On enregistre une référence pour pouvoir récupérer cet objet dans d'autres fixtures
+            $this->addReference('etat_' . $libelle, $etat);
         }
 
         $manager->flush();
