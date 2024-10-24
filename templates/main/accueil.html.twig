@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Faites des sorties !
+{% endblock %}
+
+{% block body %}
+    <h5>Filtrer les sorties</h5>
+
+    {{ form_start(accueilForm) }}
+    <div >
+        <div class="d-flex justify-content-around">
+            <div class="column-1">
+                <!-- Label et input pour le campus côte à côte -->
+                <div class="d-flex align-items-center mb-1">
+                    {{ form_label(accueilForm.campus, 'Campus', {'label_attr': {'class': 'me-5'}}) }} <!-- Le label Campus -->
+                    {{ form_widget(accueilForm.campus, {'attr': {'class': 'form-control', 'style': 'height: 30px; font-size: 0.8rem;'}}) }} <!-- Input campus -->
+                </div>
+
+                <!-- Label et input pour la recherche côte à côte -->
+                <div class="d-flex align-items-center mb-1">
+                    {{ form_label(accueilForm.nom_sortie, 'Rechercher', {'label_attr': {'class': 'me-5'}}) }} <!-- Le label Rechercher -->
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i> <!-- Icône de loupe -->
+                        </span>
+                        {{ form_widget(accueilForm.nom_sortie, {'attr': {'class': 'form-control', 'placeholder': 'Rechercher une sortie...', 'style': 'height: 30px; font-size: 0.8rem;'}}) }} <!-- Input de recherche -->
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-1">
+                    <label class="me-2">{{ form_label(accueilForm.date_debut, 'Entre') }}</label>
+                    {{ form_widget(accueilForm.date_debut, { 'attr': {'class': 'form-control me-2', 'style': 'height: 30px; font-size: 0.8rem;'} }) }}
+
+                    <label class="me-2">{{ form_label(accueilForm.date_fin, 'et') }}</label>
+                    {{ form_widget(accueilForm.date_fin, { 'attr': {'class': 'form-control me-5', 'style': 'height: 30px; font-size: 0.8rem;'} }) }}
+                </div>
+        </div>
+
+        <div class="column-2">
+            <div>
+                <label>{{ form_label(accueilForm.sortie_organisateur) }}</label>
+                {{ form_widget(accueilForm.sortie_organisateur) }}
+            </div>
+
+            <div>
+                <label>{{ form_label(accueilForm.sortie_inscrit , { 'attr': {'class': 'form-control' }}) }}</label>
+                {{ form_widget(accueilForm.sortie_inscrit) }}
+            </div>
+
+            <div>
+                <label>{{ form_label(accueilForm.sortie_non_inscrit, { 'attr': {'class': 'form-control' }}) }}</label>
+                {{ form_widget(accueilForm.sortie_non_inscrit) }}
+            </div>
+
+            <div>
+                <label>{{ form_label(accueilForm.sortie_passee , { 'attr': {'class': 'form-control' }}) }}</label>
+                {{ form_widget(accueilForm.sortie_passee) }}
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center column-3">
+            {{ form_widget(accueilForm.rechercher, {'attr': {'class': 'btn btn-primary p-4'}}) }}
+        </div>
+
+    </div>
+</div>
+{{ form_end(accueilForm) }}
+
+{# Todo: Mettre le lien vers la page de création des sorties #}
+
+    <button class="btn btn-primary p-2"><a href="" class="text-decoration-none text-white">Créer une sortie</a></button>
+
+{% endblock %}

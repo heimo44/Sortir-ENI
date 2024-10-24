@@ -19,7 +19,7 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
@@ -34,8 +34,9 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $infosSortie = null;
 
-    #[ORM\Column]
-    private ?int $etat = null;
+    #[ORM\ManyToOne(targetEntity: Etat::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $etat = null;
 
     #[ORM\ManyToOne(inversedBy: 'sortie')]
     private ?Campus $campus = null;
@@ -137,12 +138,12 @@ class Sortie
         return $this;
     }
 
-    public function getEtat(): ?int
+    public function getEtat(): ?Etat
     {
         return $this->etat;
     }
 
-    public function setEtat(int $etat): static
+    public function setEtat(?Etat $etat): self
     {
         $this->etat = $etat;
 
