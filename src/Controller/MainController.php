@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'main_accueil', methods: ['GET'])]
+    #[Route('/accueil', name: 'main_accueil', methods: ['GET'])]
     public function accueil(Request $request): Response
     {
         // Création du formulaire AccueilType
