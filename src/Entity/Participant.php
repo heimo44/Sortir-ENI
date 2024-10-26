@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -25,21 +26,41 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+    #[Assert\NotBlank(message:"rentrer un nom !!")]
+    #[Assert\Length(min:4,max:50)]
     #[ORM\Column(length: 180)]
     private ?string $Lastname = null;
 
+    #[Assert\NotBlank(message:"rentrer un prenom !!")]
+    #[Assert\Length(min:4,max:50)]
     #[ORM\Column(length: 180)]
     private ?string $Firstname= null;
 
+    #[Assert\NotBlank(message:"rentrer un numéro de téléphone !!")]
+    #[Assert\Length(min:10, max:10, exactMessage: "la longueur doit être exactement de {{ limit }} chiffres")]
     #[ORM\Column]
     private ?string $telephone = null;
 
+    #[Assert\NotBlank(message: "Rentrer une adresse email !!")]
+    #[Assert\Email(message: "Le format de l'email '{{ value }}' n'est pas valide.")]
+    #[Assert\Length(max: 180, maxMessage: "L'email ne peut pas dépasser {{ limit }} caractères.")]
     #[ORM\Column(length: 180)]
     private ?string $email;
 
     /**
      * @var string The hashed password
      */
+    #[Assert\Length(
+        min: 8,
+        max: 64,
+        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le mot de passe ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Regex(
+        pattern: "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/",
+        message: "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial."
+    )]
+    #[Assert\NotBlank(message: "Rentrer votre mot de passe.")]
     #[ORM\Column]
     private ?string $password;
 

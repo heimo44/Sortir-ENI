@@ -8,7 +8,7 @@ body {
     padding: 9%;
 }
 .navbar{
-    background-color: aqua;
+    background-color: rgba(148, 241, 241, 0.96);
 }
 .nav-item{
     margin-left: 10px;
@@ -29,13 +29,21 @@ body {
     text-align: center;
     color: black;
     font-size: 1em;
-    background-color: aqua;
+    background-color: rgba(148, 241, 241, 0.96);
     font-weight: 700;
 }
+.card-body{
+    background-color: rgba(148, 241, 241, 0.96);
+}
 .container-login{
+
     color: black;
     font-size: 1.5em;
     font-weight: 900;
+}
+.checkbox-remember{
+    font-size: 0.8em;
+    font-weight: 400;
 }
 .column-1, .column-2, .column-3 {
     font-size: 0.9rem;
@@ -48,4 +56,26 @@ body {
 }
 .column-2 div {
     height: 1.4rem;
+}
+@media (max-width: 1024px) {
+    .sortir {
+        font-size: 2.5em; /* Ajustement de la taille de la police */
+        padding: 6%;
+    }
+}
+
+/* Pour les mobiles (écrans de petite taille) */
+@media (max-width: 768px) {
+    .sortir {
+        font-size: 2em; /* Encore plus petit pour mobiles */
+        padding: 4%;
+    }
+}
+
+/* Pour très petits écrans ou très petits appareils mobiles */
+@media (max-width: 480px) {
+    .sortir {
+        font-size: 1.5em; /* Police plus petite pour petits écrans */
+        padding: 3%;
+    }
 }

@@ -18,15 +18,21 @@
         {% endblock %}
     </head>
     <body>
-        <header>
-            {% include("_navbar.html.twig")  %}
-        </header>
-        <main class="p-3">
-            {% block body %}{% endblock %}
-        </main>
-        <footer class="footer">
-            &copy; Sortir-ENI {{ "now" |date("Y") }}
-        </footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.x.x/dist/js/bootstrap.bundle.min.js"></script>
+    <header>
+        {% include("_navbar.html.twig")  %}
+    </header>
+    <main class="p-3">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} mty-3">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+        {% block body %}
+        {% endblock %}
+    </main>
+    <footer class="footer">
+        &copy Sortir-ENI {{ "now" |date("Y") }}
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.x.x/dist/js/bootstrap.bundle.min.js"></script>
     </body>
-</html>
+
