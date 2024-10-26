@@ -4,9 +4,10 @@ namespace App\DataFixtures;
 
 use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class SortieFixtures extends Fixture
+class SortieFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -24,15 +25,8 @@ class SortieFixtures extends Fixture
 
             // Vérifie si l'objet DateTime est correctement créé
             if ($dateSortie instanceof \DateTime) {
-                // Affiche la date avant modification
-                echo "Avant modification: " . $dateSortie->format('Y-m-d H:i:s') . "\n";
-
                 // Définit l'heure et les minutes
                 $dateSortie->setTime($faker->numberBetween(0, 23), $faker->numberBetween(0, 59));
-
-                // Affiche la date après modification
-                echo "Après modification: " . $dateSortie->format('Y-m-d H:i:s') . "\n";
-
                 $sortie->setDateHeureDebut($dateSortie);
 
                 // Clôture : clone la date de sortie pour éviter de la modifier directement
@@ -53,6 +47,25 @@ class SortieFixtures extends Fixture
                 $etat = $this->getReference('etat_' . $faker->randomElement(["Créée", "Ouverte", "Clôturée", "Activité en cours", "passée", "Annulée"]));
                 $sortie->setEtat($etat);
 
+                // Attribue une valeur aléatoire au campus
+                $campus = $this->getReference('campus_' . $faker->randomElement(["NANTES", "RENNES", "QUIMPER", "NIORT"]));
+                $sortie->setCampus($campus);
+
+                // Attribue une valeur aléatoire au participant
+                // Tirer au sort un participant
+                $randomParticipantIndex = $faker->numberBetween(1, 5);
+                $randomParticipant = $this->getReference("user$randomParticipantIndex");
+                // Associer ce participant à la sortie
+                $sortie->setParticipant($randomParticipant);
+
+                // Choisir un lieu au hasard parmi les lieux
+                $randomLieuName = $faker->randomElement([
+                    'restaurant_les_caudalies', 'salle_de_concert', 'jardinnerie_jane',
+                    'cinema', 'mediatheque', 'theatre', 'piscine', 'atelier_cours_de_cuisine'
+                ]);
+                $randomLieu = $this->getReference('lieu_' . $randomLieuName);
+                $sortie->setLieu($randomLieu);
+
                 // Persiste l'entité dans la base de données
                 $manager->persist($sortie);
             }
@@ -65,6 +78,8 @@ class SortieFixtures extends Fixture
     {
         return [
             EtatFixtures::class, // Indique que EtatFixture doit être chargé avant
+            CampusFixtures::class,
+            LieuFixtures::class,
         ];
     }
 }

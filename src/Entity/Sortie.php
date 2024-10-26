@@ -44,9 +44,6 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Lieu $lieu = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    private ?Etat $state = null;
-
     /**
      * @var Collection<int, Participant>
      */
@@ -170,18 +167,6 @@ class Sortie
     public function setLieu(?Lieu $lieu): static
     {
         $this->lieu = $lieu;
-
-        return $this;
-    }
-
-    public function getState(): ?Etat
-    {
-        return $this->state;
-    }
-
-    public function setState(?Etat $state): static
-    {
-        $this->state = $state;
 
         return $this;
     }
