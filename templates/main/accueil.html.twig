@@ -5,10 +5,22 @@
 {% endblock %}
 
 {% block body %}
-    <h5>Filtrer les sorties</h5>
+    <div class="d-flex flex-column float-end pe-2 fw-bold" >
+        <div>
+            Date du jour : {{ currentDate|date('d/m/Y') }}
+        </div>
+        {% if user %}
+        <div>
+            Participant : {{ user.Lastname }} {{ user.Firstname }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="mt-5">
+        <h5>Filtrer les sorties</h5>
+    </div>
 
     {{ form_start(accueilForm) }}
-    <div >
+    <div>
         <div class="d-flex justify-content-around">
             <div class="column-1">
                 <!-- Label et input pour le campus côte à côte -->
@@ -67,7 +79,35 @@
 </div>
 {{ form_end(accueilForm) }}
 
-{# Todo: Mettre le lien vers la page de création des sorties #}
+    <div class="mt-5">
+        <h2>Sorties</h2>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>État</th>
+                <th>Organisateur</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
+                    <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
+                    <td>{{ sortie.etat.nom }}</td>
+                    <td>{{ sortie.organisateur.nom }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucune sortie trouvée pour ces critères.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <button class="btn btn-primary p-2"><a href="{{ path('app_sortie_new') }}" class="text-decoration-none text-white">Créer une sortie</a></button>
 

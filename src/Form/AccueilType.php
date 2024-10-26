@@ -46,7 +46,7 @@ class AccueilType extends AbstractType
                     'class' => 'form-control'
                 ],
             ])
-            ->add('sortie_organisateur', CheckboxType::class, [
+            ->add('isOrganizer', CheckboxType::class, [      //sortie_organisateur remplacé par isOrganizer
                 'label' => 'Sorties dont je suis l\'organisateur/trice',
                 'required' => false
             ])
