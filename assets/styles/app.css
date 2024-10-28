@@ -49,3 +49,32 @@ body {
 .column-2 div {
     height: 1.4rem;
 }
+
+.container-profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0 auto;
+}
+
+.table-profile {
+    background-color: rgba(230, 230, 230, 0.9);
+    border-radius: 5px;
+    width: 40vw;
+    margin: 0 auto;
+}
+
+.table-profile td {
+    background-color: transparent;
+    padding: 10px;
+}
+
+.button-container {
+    margin-top: 20px;
+}
+
+.btn-primary {
+    margin-top: 10px;
+}

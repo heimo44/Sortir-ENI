@@ -21,7 +21,7 @@ final class Version20241024123612 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE participant ADD lastname VARCHAR(180) NOT NULL, ADD firstname VARCHAR(180) NOT NULL, DROP nom, DROP prenom, DROP administrateur, CHANGE telephone telephone VARCHAR(255) NOT NULL, CHANGE email email VARCHAR(180) NOT NULL, CHANGE password password VARCHAR(255) NOT NULL');
-        $this->addSql('ALTER TABLE sortie ADD CONSTRAINT FK_3C3FD3F29D1C3019 FOREIGN KEY (participant_id) REFERENCES participant (id)');
+        $this->addSql('ALTER TABLE sortie CHANGE date_heure_debut date_heure_debut DATETIME NOT NULL');
     }
 
     public function down(Schema $schema): void
