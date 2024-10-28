@@ -50,10 +50,10 @@
         </div>
 
         <div class="column-2">
-            <div>
-                <label>{{ form_label(accueilForm.sortie_organisateur) }}</label>
-                {{ form_widget(accueilForm.sortie_organisateur) }}
-            </div>
+{#            <div>#}
+{#                <label>{{ form_label(accueilForm.sortie_organisateur) }}</label>#}
+{#                {{ form_widget(accueilForm.sortie_organisateur) }}#}
+{#            </div>#}
 
             <div>
                 <label>{{ form_label(accueilForm.sortie_inscrit , { 'attr': {'class': 'form-control' }}) }}</label>
@@ -92,19 +92,19 @@
             </tr>
             </thead>
             <tbody>
-            {% for sortie in sorties %}
-                <tr>
-                    <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
-                    <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
-                    <td>{{ sortie.etat.nom }}</td>
-                    <td>{{ sortie.organisateur.nom }}</td>
-                </tr>
-            {% else %}
+{#            {% for sortie in sorties %}#}
+{#                <tr>#}
+{#                    <td>{{ sortie.nom }}</td>#}
+{#                    <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>#}
+{#                    <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>#}
+{#                    <td>{{ sortie.etat.nom }}</td>#}
+{#                    <td>{{ sortie.organisateur.nom }}</td>#}
+{#                </tr>#}
+{#            {% else %}#}
                 <tr>
                     <td colspan="5">Aucune sortie trouvée pour ces critères.</td>
                 </tr>
-            {% endfor %}
+{#            {% endfor %}#}
             </tbody>
         </table>
     </div>

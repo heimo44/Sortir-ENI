@@ -27,31 +27,31 @@ class MainController extends AbstractController
         $user = $this->getUser();
 
         // Initialiser les critères de filtre
-        $campus = null;
-        $isOrganizer = false;
-        $inscrit = false;
-        $nonInscrit = false;
-        $passe = false;
-        $nomSortie = null;
-        $dateDebut = null;
-        $dateFin = null;
+//        $campus = null;
+//        $isOrganizer = false;
+//        $inscrit = false;
+//        $nonInscrit = false;
+//        $passe = false;
+//        $nomSortie = null;
+//        $dateDebut = null;
+//        $dateFin = null;
 
-        // Vérifier si le formulaire a été soumis et est valide
-        if ($accueilForm->isSubmitted() && $accueilForm->isValid()) {
-            $data = $accueilForm->getData();
-            $campus = $data['campus'] ?? null;
-            $isOrganizer = $data['organisateur'] ?? false;
-        }
-
-        // Récupérer les sorties en fonction des critères
-        $sorties = $sortieRepository->findWithFilters($campus, $isOrganizer, $user);
-
-
+//        // Vérifier si le formulaire a été soumis et est valide
+//        if ($accueilForm->isSubmitted() && $accueilForm->isValid()) {
+//            $data = $accueilForm->getData();
+//            $campus = $data['campus'] ?? null;
+//            $isOrganizer = $data['organisateur'] ?? false;
+//        }
+//
+//        // Récupérer les sorties en fonction des critères
+//        $sorties = $sortieRepository->findWithFilters($campus, $isOrganizer, $user);
+//
+//
         return $this->render('main/accueil.html.twig', [
             'accueilForm' => $accueilForm,
             'currentDate' => $currentDate,
             'user' => $user,
-            'sorties' => $sorties,
+//            'sorties' => $sorties,
         ]);
     }
 }
