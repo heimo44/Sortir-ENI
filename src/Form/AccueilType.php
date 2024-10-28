@@ -24,29 +24,34 @@ class AccueilType extends AbstractType
                 'placeholder' => 'Veuillez choisir votre campus',
             ])
             ->add('nom_sortie', TextType::class, [
-                'label' => 'Le nom de la sortie contient',
+                'required' => false, // Ici, on rend le champ non requis
                 'attr' => [
-                    'class' => 'form-control', // Pour le style Bootstrap
-                    'placeholder' => 'Rechercher une sortie...' // Texte d'indication
+                    'class' => 'form-control',
+                    'placeholder' => 'Rechercher une sortie...',
+                    'style' => 'height: 30px; font-size: 0.8rem;'
                 ]
             ])
             // Champ de sélection de la première date (date de début)
             ->add('date_debut', DateType::class, [
+                'required' => false, // Ici, on rend le champ non requis
                 'widget' => 'single_text',
                 'label' => 'Entre',
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control me-2',
+                    'style' => 'height: 30px; font-size: 0.8rem;',
                 ],
             ])
             // Champ de sélection de la deuxième date (date de fin)
             ->add('date_fin', DateType::class, [
+                'required' => false, // Ici, on rend le champ non requis
                 'widget' => 'single_text',
                 'label' => 'et',
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control me-5',
+                    'style' => 'height: 30px; font-size: 0.8rem;',
                 ],
             ])
-            ->add('isOrganizer', CheckboxType::class, [      //sortie_organisateur remplacé par isOrganizer
+            ->add('organisateur', CheckboxType::class, [      //sortie_organisateur remplacé par isOrganizer
                 'label' => 'Sorties dont je suis l\'organisateur/trice',
                 'required' => false
             ])
@@ -63,7 +68,7 @@ class AccueilType extends AbstractType
                 'required' => false
             ])
             ->add('rechercher', SubmitType::class, [
-                'label' => 'Rechercher'
+                'label' => 'Rechercher',
             ]);
     }
 

@@ -9,11 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-
-
 class MainController extends AbstractController
 {
-    #[Route('/accueil', name: 'main_accueil', methods: ['GET'])]
+    #[Route('/accueil', name: 'main_accueil', methods: ['GET', 'POST'])]
     public function accueil(Request $request, SortieRepository $sortieRepository): Response
     {
         // Création du formulaire AccueilType
@@ -29,12 +27,6 @@ class MainController extends AbstractController
         // Initialiser les critères de filtre
         $campus = null;
         $isOrganizer = false;
-        $inscrit = false;
-        $nonInscrit = false;
-        $passe = false;
-        $nomSortie = null;
-        $dateDebut = null;
-        $dateFin = null;
 
         // Vérifier si le formulaire a été soumis et est valide
         if ($accueilForm->isSubmitted() && $accueilForm->isValid()) {
@@ -44,11 +36,13 @@ class MainController extends AbstractController
         }
 
         // Récupérer les sorties en fonction des critères
-        $sorties = $sortieRepository->findWithFilters($campus, $isOrganizer, $user);
+        dump($campus, $isOrganizer, $user);
+        $sorties = $sortieRepository->findByFilters($campus, $isOrganizer, $user);
 
+        dump($sorties);
 
         return $this->render('main/accueil.html.twig', [
-            'accueilForm' => $accueilForm,
+            'accueilForm' => $accueilForm->createView(),
             'currentDate' => $currentDate,
             'user' => $user,
             'sorties' => $sorties,

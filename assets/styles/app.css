@@ -57,6 +57,12 @@ body {
 .column-2 div {
     height: 1.4rem;
 }
+
+.table-container {
+    max-height: 150px; /* Ajuste la hauteur selon tes besoins */
+    overflow-y: auto; /* Ajoute un ascenseur vertical */
+}
+
 @media (max-width: 1024px) {
     .sortir {
         font-size: 2.5em; /* Ajustement de la taille de la police */

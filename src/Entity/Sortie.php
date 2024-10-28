@@ -50,8 +50,8 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'inscrit')]
     private Collection $participants;
 
-    #[ORM\ManyToOne(inversedBy: 'organisateur')]
-    private ?Participant $participant = null;
+    #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'organisateur')]
+    private ?Participant $organisateur = null;
 
     public function __construct()
     {
@@ -198,14 +198,14 @@ class Sortie
         return $this;
     }
 
-    public function getParticipant(): ?Participant
+    public function getOrganisateur(): ?Participant
     {
-        return $this->participant;
+        return $this->organisateur;
     }
 
-    public function setParticipant(?Participant $participant): static
+    public function setOrganisateur(?Participant $organisateur): static
     {
-        $this->participant = $participant;
+        $this->organisateur = $organisateur;
 
         return $this;
     }
