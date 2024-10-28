@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241025082848 extends AbstractMigration
+final class Version20241024123612 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20241025082848 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE participant ADD lastname VARCHAR(180) NOT NULL, ADD firstname VARCHAR(180) NOT NULL, DROP nom, DROP prenom, DROP administrateur, CHANGE telephone telephone VARCHAR(255) NOT NULL, CHANGE email email VARCHAR(180) NOT NULL, CHANGE password password VARCHAR(255) NOT NULL');
-        $this->addSql('ALTER TABLE sortie CHANGE date_heure_debut date_heure_debut DATETIME NOT NULL');
+        $this->addSql('ALTER TABLE sortie ADD CONSTRAINT FK_3C3FD3F29D1C3019 FOREIGN KEY (participant_id) REFERENCES participant (id)');
     }
 
     public function down(Schema $schema): void
@@ -36,7 +36,6 @@ final class Version20241025082848 extends AbstractMigration
         $this->addSql('ALTER TABLE participant_sortie DROP FOREIGN KEY FK_8E436D73CC72D953');
         $this->addSql('DROP TABLE participant_sortie');
         $this->addSql('ALTER TABLE sortie DROP FOREIGN KEY FK_3C3FD3F29D1C3019');
-        $this->addSql('ALTER TABLE sortie CHANGE date_heure_debut date_heure_debut DATE NOT NULL');
         $this->addSql('ALTER TABLE participant ADD nom VARCHAR(255) NOT NULL, ADD prenom VARCHAR(255) NOT NULL, ADD administrateur TINYINT(1) NOT NULL, DROP lastname, DROP firstname, CHANGE telephone telephone INT NOT NULL, CHANGE email email VARCHAR(255) NOT NULL, CHANGE password password VARCHAR(4000) NOT NULL');
     }
 }
