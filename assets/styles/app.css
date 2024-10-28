@@ -49,7 +49,15 @@ body {
 .column-2 div {
     height: 1.4rem;
 }
-
+.table-container {
+    max-height: 150px; /* Ajuste la hauteur selon tes besoins */
+    overflow-y: auto; /* Ajoute un ascenseur vertical */
+}
+@media (max-width: 1024px) {
+    .sortir {
+        font-size: 2.5em; /* Ajustement de la taille de la police */
+        padding: 6%;
+    }
 .container-profile {
     display: flex;
     flex-direction: column;
@@ -58,23 +66,19 @@ body {
     height: 100vh;
     margin: 0 auto;
 }
-
 .table-profile {
     background-color: rgba(230, 230, 230, 0.9);
     border-radius: 5px;
     width: 40vw;
     margin: 0 auto;
 }
-
 .table-profile td {
     background-color: transparent;
     padding: 10px;
 }
-
 .button-container {
     margin-top: 20px;
 }
-
 .btn-primary {
     margin-top: 10px;
 }

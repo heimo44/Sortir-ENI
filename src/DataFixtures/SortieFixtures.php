@@ -56,7 +56,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
                 $randomParticipantIndex = $faker->numberBetween(1, 5);
                 $randomParticipant = $this->getReference("user$randomParticipantIndex");
                 // Associer ce participant à la sortie
-                $sortie->setParticipant($randomParticipant);
+                $sortie->setOrganisateur($randomParticipant);
 
                 // Choisir un lieu au hasard parmi les lieux
                 $randomLieuName = $faker->randomElement([

@@ -80,7 +80,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Sortie>
      */
-    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'participant')]
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $organisateur;
 
     #[ORM\Column(length: 180, nullable: true)]
@@ -288,5 +288,3 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 }
-
-
