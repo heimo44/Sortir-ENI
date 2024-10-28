@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }}">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {% if participant.pseudo is null %}
+        <h1 class="h1" style="text-align: center">Information de {{ participant.Firstname }}</h1>
+    {% else %}
+        <h1 class="h1" style="text-align: center">Information de {{ participant.pseudo }}</h1>
+    {% endif %}
+
+    <div class="container-profile" style="height: 60vh;">
+        <table class="table-profile">
+            <tbody>
+            <tr>
+                <td class="text-end" style="width: 50%;">Prénom :</td>
+                <td style="width: 50%;">{{ participant.Lastname }}</td>
+            </tr>
+            <tr>
+                <td class="text-end" style="width: 50%;">Nom :</td>
+                <td style="width: 50%;">{{ participant.Firstname }}</td>
+            </tr>
+            <tr>
+                <td class="text-end" style="width: 50%;">Téléphone :</td>
+                <td style="width: 50%;">{{ participant.telephone }}</td>
+            </tr>
+            <tr>
+                <td class="text-end" style="width: 50%;">Email :</td>
+                <td style="width: 50%;">{{ participant.email }}</td>
+            </tr>
+            <tr>
+                <td class="text-end" style="width: 50%;">Campus :</td>
+                <td style="width: 50%;">
+                    {% if participant.campus is null %}
+                        Pas de campus
+                    {% else %}
+                        {{ participant.campus.nom }}
+                    {% endif %}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        {% if app.user and (app.user.id == participant.id) %}
+            <div class="mb-3 text-center">
+                <a href="{{ path('participant_edit', {'id': app.user.id}) }}">
+                    <button type="button" class="btn btn-primary" style="margin-top: 20px;">Éditer</button>
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
+
+{% block title %}
+    Affichage de {{ participant.Lastname }}
+{% endblock %}
+

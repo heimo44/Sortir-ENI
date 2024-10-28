@@ -8,7 +8,7 @@ body {
     padding: 9%;
 }
 .navbar{
-    background-color: rgba(148, 241, 241, 0.96);
+    background-color: aqua;
 }
 .nav-item{
     margin-left: 10px;
@@ -29,21 +29,13 @@ body {
     text-align: center;
     color: black;
     font-size: 1em;
-    background-color: rgba(148, 241, 241, 0.96);
+    background-color: aqua;
     font-weight: 700;
 }
-.card-body{
-    background-color: rgba(148, 241, 241, 0.96);
-}
 .container-login{
-
     color: black;
     font-size: 1.5em;
     font-weight: 900;
-}
-.checkbox-remember{
-    font-size: 0.8em;
-    font-weight: 400;
 }
 .column-1, .column-2, .column-3 {
     font-size: 0.9rem;
@@ -57,31 +49,36 @@ body {
 .column-2 div {
     height: 1.4rem;
 }
-
 .table-container {
     max-height: 150px; /* Ajuste la hauteur selon tes besoins */
     overflow-y: auto; /* Ajoute un ascenseur vertical */
 }
-
 @media (max-width: 1024px) {
     .sortir {
         font-size: 2.5em; /* Ajustement de la taille de la police */
         padding: 6%;
     }
+.container-profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0 auto;
 }
-
-/* Pour les mobiles (écrans de petite taille) */
-@media (max-width: 768px) {
-    .sortir {
-        font-size: 2em; /* Encore plus petit pour mobiles */
-        padding: 4%;
-    }
+.table-profile {
+    background-color: rgba(230, 230, 230, 0.9);
+    border-radius: 5px;
+    width: 40vw;
+    margin: 0 auto;
 }
-
-/* Pour très petits écrans ou très petits appareils mobiles */
-@media (max-width: 480px) {
-    .sortir {
-        font-size: 1.5em; /* Police plus petite pour petits écrans */
-        padding: 3%;
-    }
+.table-profile td {
+    background-color: transparent;
+    padding: 10px;
+}
+.button-container {
+    margin-top: 20px;
+}
+.btn-primary {
+    margin-top: 10px;
 }
