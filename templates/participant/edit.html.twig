@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Edition {{ participant.Lastname }}
+{% endblock %}
+
+{% block body %}
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }}">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <h1> Edition de {{ participant.Lastname }}</h1>
+    {{ form_start(participantForm) }}
+    {{ form_row(participantForm.pseudo) }}
+    {{ form_row(participantForm.Lastname) }}
+    {{ form_row(participantForm.Firstname) }}
+    {{ form_row(participantForm.telephone) }}
+    {{ form_row(participantForm.email) }}
+    {{ form_row(participantForm.password) }}
+    <div class="mb-3">
+        <label for="participant_passwordConfirm" class="form-label required">Confirmation du mot de passe</label>
+        <input type="password" id="participant_passwordConfirm" name="confirm_password" required="required" class="form-control" />
+    </div>
+    {{ form_row(participantForm.campus) }}
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a href="{{ path('main_accueil') }}"><button type="button" class="btn btn-primary">Annuler</button></a>
+    {{ form_end(participantForm) }}
+{% endblock %}
