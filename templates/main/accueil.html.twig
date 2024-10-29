@@ -51,22 +51,22 @@
 
         <div class="column-2">
             <div>
-                <label>{{ form_label(accueilForm.sortie_organisateur) }}</label>
-                {{ form_widget(accueilForm.sortie_organisateur) }}
+                {{ form_label(accueilForm.organisateur) }}
+                {{ form_widget(accueilForm.organisateur) }}
             </div>
 
             <div>
-                <label>{{ form_label(accueilForm.sortie_inscrit , { 'attr': {'class': 'form-control' }}) }}</label>
+                {{ form_label(accueilForm.sortie_inscrit , { 'attr': {'class': 'form-control' }}) }}
                 {{ form_widget(accueilForm.sortie_inscrit) }}
             </div>
 
             <div>
-                <label>{{ form_label(accueilForm.sortie_non_inscrit, { 'attr': {'class': 'form-control' }}) }}</label>
+                {{ form_label(accueilForm.sortie_non_inscrit, { 'attr': {'class': 'form-control' }}) }}
                 {{ form_widget(accueilForm.sortie_non_inscrit) }}
             </div>
 
             <div>
-                <label>{{ form_label(accueilForm.sortie_passee , { 'attr': {'class': 'form-control' }}) }}</label>
+                {{ form_label(accueilForm.sortie_passee , { 'attr': {'class': 'form-control' }}) }}
                 {{ form_widget(accueilForm.sortie_passee) }}
             </div>
         </div>
@@ -97,8 +97,8 @@
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
                     <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
-                    <td>{{ sortie.etat.nom }}</td>
-                    <td>{{ sortie.organisateur.nom }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>{{ sortie.organisateur.Firstname }} {{ sortie.organisateur.Lastname }}</td>
                 </tr>
             {% else %}
                 <tr>
