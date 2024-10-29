@@ -29,8 +29,9 @@ security:
                 lifetime: 604800
                 path: /
                 always_remember_me: true
-                # where to redirect after logout
-                #target: /
+            access_denied_url: /accueil
+                # Si l'utilisateur tente d'accéder à une page dont l'accès ne lui est pas permis, il sera redirigé
+                # vers la page d'accueil ou de connexion si non connecté
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

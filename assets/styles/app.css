@@ -49,15 +49,6 @@ body {
 .column-2 div {
     height: 1.4rem;
 }
-.table-container {
-    max-height: 150px; /* Ajuste la hauteur selon tes besoins */
-    overflow-y: auto; /* Ajoute un ascenseur vertical */
-}
-@media (max-width: 1024px) {
-    .sortir {
-        font-size: 2.5em; /* Ajustement de la taille de la police */
-        padding: 6%;
-    }
 .container-profile {
     display: flex;
     flex-direction: column;
@@ -67,7 +58,7 @@ body {
     margin: 0 auto;
 }
 .table-profile {
-    background-color: rgba(230, 230, 230, 0.9);
+    background-color: transparent;
     border-radius: 5px;
     width: 40vw;
     margin: 0 auto;
@@ -76,9 +67,23 @@ body {
     background-color: transparent;
     padding: 10px;
 }
-.button-container {
-    margin-top: 20px;
+@media (max-width: 1024px) {
+    .sortir {
+        font-size: 2.5em; /* Ajustement de la taille de la police */
+        padding: 6%;
+    }
 }
-.btn-primary {
-    margin-top: 10px;
+/* Pour les mobiles (écrans de petite taille) */
+@media (max-width: 768px) {
+    .sortir {
+        font-size: 2em; /* Encore plus petit pour mobiles */
+        padding: 4%;
+    }
+}
+/* Pour très petits écrans ou très petits appareils mobiles */
+@media (max-width: 480px) {
+    .sortir {
+        font-size: 1.5em; /* Police plus petite pour petits écrans */
+        padding: 3%;
+    }
 }

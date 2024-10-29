@@ -36,52 +36,51 @@
                         <span class="input-group-text">
                             <i class="fas fa-search"></i> <!-- Icône de loupe -->
                         </span>
-                        {{ form_widget(accueilForm.nom_sortie) }} <!-- Input de recherche -->
+                        {{ form_widget(accueilForm.nom_sortie, {'attr': {'class': 'form-control', 'placeholder': 'Rechercher une sortie...', 'style': 'height: 30px; font-size: 0.8rem;'}}) }} <!-- Input de recherche -->
                     </div>
                 </div>
 
                 <div class="d-flex align-items-center mb-1">
                     <label class="me-2">{{ form_label(accueilForm.date_debut, 'Entre') }}</label>
-                    {{ form_widget(accueilForm.date_debut) }}
+                    {{ form_widget(accueilForm.date_debut, { 'attr': {'class': 'form-control me-2', 'style': 'height: 30px; font-size: 0.8rem;'} }) }}
 
                     <label class="me-2">{{ form_label(accueilForm.date_fin, 'et') }}</label>
-                    {{ form_widget(accueilForm.date_fin) }}
+                    {{ form_widget(accueilForm.date_fin, { 'attr': {'class': 'form-control me-5', 'style': 'height: 30px; font-size: 0.8rem;'} }) }}
                 </div>
         </div>
 
         <div class="column-2">
             <div>
-                {{ form_label(accueilForm.organisateur, "Sorties dont je suis l\'organisateur//trice") }}
-                {{ form_widget(accueilForm.organisateur) }}
+                <label>{{ form_label(accueilForm.sortie_organisateur) }}</label>
+                {{ form_widget(accueilForm.sortie_organisateur) }}
             </div>
 
             <div>
-                {{ form_label(accueilForm.sortie_inscrit, "Sories auxquelles je suis inscrit//e",{ "attr": {"class": "form-control" }}) }}
+                <label>{{ form_label(accueilForm.sortie_inscrit , { 'attr': {'class': 'form-control' }}) }}</label>
                 {{ form_widget(accueilForm.sortie_inscrit) }}
             </div>
 
             <div>
-                {{ form_label(accueilForm.sortie_non_inscrit, "Sorties auxquelles je ne suis pas inscrit//e", { "attr": {"class": "form-control" }}) }}
+                <label>{{ form_label(accueilForm.sortie_non_inscrit, { 'attr': {'class': 'form-control' }}) }}</label>
                 {{ form_widget(accueilForm.sortie_non_inscrit) }}
             </div>
 
             <div>
-                {{ form_label(accueilForm.sortie_passee , "Sorties passées", { "attr": {"class": "form-control" }}) }}
+                <label>{{ form_label(accueilForm.sortie_passee , { 'attr': {'class': 'form-control' }}) }}</label>
                 {{ form_widget(accueilForm.sortie_passee) }}
             </div>
         </div>
 
         <div class="d-flex align-items-center column-3">
-            {{ form_widget(accueilForm.rechercher, {"attr": {"class": "btn btn-primary p-4"}}) }}
+            {{ form_widget(accueilForm.rechercher, {'attr': {'class': 'btn btn-primary p-4'}}) }}
         </div>
 
     </div>
 </div>
 {{ form_end(accueilForm) }}
 
-<div class="mt-2">
-    <h4>Sorties</h4>
-    <div class="table-container">
+    <div class="mt-5">
+        <h2>Sorties</h2>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -93,26 +92,23 @@
             </tr>
             </thead>
             <tbody>
-                {% for sortie in sorties %}
-                    <tr>
-                        <td>{{ sortie.nom }}</td>
-                        <td>{{ sortie.dateHeureDebut|date("d/m/Y H:i") }}</td>
-                        <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
-                        <td>{{ sortie.etat.libelle }}</td>
-                        <td>{{ sortie.organisateur.Lastname }} {{ sortie.organisateur.Firstname }}</td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="5">Aucune sortie trouvée pour ces critères.</td>
-                    </tr>
-                {% endfor %}
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
+                    <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
+                    <td>{{ sortie.etat.nom }}</td>
+                    <td>{{ sortie.organisateur.nom }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucune sortie trouvée pour ces critères.</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
 
-<div class="mt-3">
-    <a href="{{ path("app_sortie_new") }}" class="btn btn-primary p-2 text-white text-decoration-none">Créer une sortie</a>
-</div>
+    <button class="btn btn-primary p-2"><a href="{{ path('app_sortie_new') }}" class="text-decoration-none text-white">Créer une sortie</a></button>
 
 {% endblock %}

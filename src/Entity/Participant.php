@@ -7,12 +7,16 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[UniqueEntity(
+    fields : ['pseudo'],
+    message: 'Le pseudo est déjà utilisé, veuillez en choisir un autre')]
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -64,7 +68,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password;
 
-
     #[ORM\Column]
     private ?bool $actif = null;
 
@@ -85,6 +88,12 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, nullable: true)]
     private ?string $pseudo = null;
+
+    #[ORM\Column(length: 4000, nullable: true)]
+    private ?string $newPassword = null;
+
+    #[ORM\Column(length: 4000, nullable: true)]
+    private ?string $newPasswordConfirmation = null;
 
     public function __construct()
     {
@@ -284,6 +293,30 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(?string $pseudo): static
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getNewPassword(): ?string
+    {
+        return $this->newPassword;
+    }
+
+    public function setNewPassword(?string $newPassword): static
+    {
+        $this->newPassword = $newPassword;
+
+        return $this;
+    }
+
+    public function getNewPasswordConfirmation(): ?string
+    {
+        return $this->newPasswordConfirmation;
+    }
+
+    public function setNewPasswordConfirmation(?string $newPasswordConfirmation): static
+    {
+        $this->newPasswordConfirmation = $newPasswordConfirmation;
 
         return $this;
     }
