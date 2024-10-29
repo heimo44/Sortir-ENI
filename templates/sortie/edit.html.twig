@@ -5,9 +5,40 @@
 {% block body %}
     <h1>Modifier la sortie</h1>
 
-    {{ include('sortie/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('sortie/_form.html.twig', {'button_label': 'Publier la sortie'}) }}
 
-    <a class="btn btn-primary" href="{{ path('main_accueil') }}">Retour à l'accueil</a>
+    <a class="btn btn-secondary">Annuler</a>
 
     {{ include('sortie/_delete_form.html.twig') }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lieuSelect = document.getElementById('sortie_lieu');
+            const rueInput = document.getElementById('sortie_rue');
+            const codePostalInput = document.getElementById('sortie_codePostal');
+            const longitudeInput = document.getElementById('sortie_longitude');
+            const latitudeInput = document.getElementById('sortie_latitude');
+
+            lieuSelect.addEventListener('change', function() {
+                const lieuId = this.value;
+
+                    fetch(`{{ path('lieu_details') }}?id=${lieuId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            rueInput.value = data.rue;
+                            codePostalInput.value = data.codePostal;
+                            longitudeInput.value = data.longitude;
+                            latitudeInput.value = data.latitude;
+                        })
+                        .catch(error => {
+                            console.error('There was a problem with the fetch operation:', error);
+                        });
+            });
+        });
+    </script>
 {% endblock %}

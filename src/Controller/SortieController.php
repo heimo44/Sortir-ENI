@@ -103,6 +103,6 @@ final class SortieController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('main_accueil', [], Response::HTTP_SEE_OTHER);
     }
 }
