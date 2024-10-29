@@ -16,6 +16,7 @@ class MainController extends AbstractController
     {
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
+        dump($user);
         $campus = $user->getCampus();
 
         // Création du formulaire AccueilType

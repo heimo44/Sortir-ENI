@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -16,22 +18,46 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: "La date et l'heure de début sont obligatoires.")]
+    #[Assert\Type("\DateTimeInterface", message: "La date de début n'est pas valide.")]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "La durée est obligatoire.")]
+    #[Assert\Positive(message: "La durée doit être un nombre positif.")]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotNull(message: "La date limite d'inscription est obligatoire.")]
+    #[Assert\Type("\DateTimeInterface", message: "La date limite d'inscription n'est pas valide.")]
+    #[Assert\GreaterThan(propertyPath: "dateHeureDebut", message: "La date limite d'inscription doit être après la date de début.")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "Le nombre maximum d'inscriptions est obligatoire.")]
+    #[Assert\Positive(message: "Le nombre maximum d'inscriptions doit être un nombre positif.")]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Les informations sur la sortie sont obligatoires.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "La description doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "La description ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $infosSortie = null;
 
     #[ORM\ManyToOne(targetEntity: Etat::class)]

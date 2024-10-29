@@ -3,9 +3,41 @@
 {% block title %}New Sortie{% endblock %}
 
 {% block body %}
-    <h1>Create new Sortie</h1>
-
+    <h1>Création d'une sortie</h1>
     {{ include('sortie/_form.html.twig') }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lieuSelect = document.getElementById('sortie_lieu');
+            const rueInput = document.getElementById('sortie_rue');
+            const codePostalInput = document.getElementById('sortie_codePostal');
+            const longitudeInput = document.getElementById('sortie_longitude');
+            const latitudeInput = document.getElementById('sortie_latitude');
 
-    <a href="{{ path('app_sortie_index') }}">back to list</a>
+            lieuSelect.addEventListener('change', function() {
+                const lieuId = this.value;
+
+                if (lieuId) {
+                    fetch(`{{ path('lieu_details') }}?id=${lieuId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            rueInput.value = data.rue;
+                            codePostalInput.value = data.codePostal;
+                            longitudeInput.value = data.longitude;
+                            latitudeInput.value = data.latitude;
+                        })
+                        .catch(error => {
+                            console.error('There was a problem with the fetch operation:', error);
+                        });
+                } else {
+                    rueInput.value = '';
+                }
+            });
+        });
+    </script>
 {% endblock %}
+
