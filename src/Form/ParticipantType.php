@@ -6,6 +6,7 @@ use App\Entity\Campus;
 use App\Entity\Participant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -18,10 +19,6 @@ class ParticipantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('pseudo', TextType::class, [
-                'label' => 'Pseudo',
-                'required' => false,
-            ])
             ->add('Lastname', TextType::class, [
                 'label' => 'Nom',
             ])
@@ -29,34 +26,67 @@ class ParticipantType extends AbstractType
                 'label' => 'Prénom'
             ])
             ->add('telephone', TextType::class, [
-                'label' => 'Numéro de telephone'
+                'label' => 'Numéro de téléphone'
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email'
             ])
-            ->add('password', PasswordType::class, [
-                'label' => 'Nouveau mot de passe',
+            ->add('newPassword', PasswordType::class, [
+                'label' => 'Mot de passe',
+                'required' => false,
+                'empty_data' => '',
                 'attr' => [
-                    // Pour que le mot de passe s'efface du champ quand changement de page
-                    'mapped' => false
+                    'mapped' => false,
                 ]
             ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nom',
             ])
+            // TO-DO : itération 2 si j'ai terminé ce truc relou avec la connexion
             /*->add('image', FileType::class, [
                 'label' => 'Image (JPEG, PNG)',
                 'mapped' => false, // We'll handle the file upload manually
                 'required' => false,
             ])*/
         ;
+
+        if ($options['user_creation']) {
+            $builder
+                ->add('roles', ChoiceType::class, [
+                    'label' => false,
+                    'choices' => [
+                        "L'utilisateur est un administrateur" => 'ROLE_ADMIN',
+                    ],
+                    'multiple' => true,
+                    'expanded' => true,
+                ]);
+        }
+
+        if ($options['user_edition']) {
+            $builder
+                ->add('pseudo', TextType::class, [
+                    'label' => 'Pseudo',
+                    'required' => false,
+                ])
+                ->add('newPasswordConfirmation', PasswordType::class, [
+                    'label' => 'Confirmer le mot de passe',
+                    'required' => false,
+                    'empty_data' => '',
+                    'attr' => [
+                        'mapped' => false,
+                    ]
+                ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Participant::class,
+            'attr' => ['novalidate' => 'novalidate'],
+            'user_creation' => false,
+            'user_edition' => false,
         ]);
     }
 }

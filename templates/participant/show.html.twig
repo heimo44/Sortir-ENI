@@ -1,5 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}
+    {% if participant.pseudo is null %}
+        {{ participant.Lastname }} | Affichage
+    {% else %}
+        {{ participant.pseudo }} | Affichage
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     {% for label, messages in app.flashes %}
         <div class="alert alert-{{ label }}">
@@ -10,9 +18,9 @@
     {% endfor %}
 
     {% if participant.pseudo is null %}
-        <h1 class="h1" style="text-align: center">Information de {{ participant.Firstname }}</h1>
+        <h1 class="h1" style="text-align: center">Information | {{ participant.Firstname }} {{ participant.Lastname }}</h1>
     {% else %}
-        <h1 class="h1" style="text-align: center">Information de {{ participant.pseudo }}</h1>
+        <h1 class="h1" style="text-align: center">Information | {{ participant.pseudo }}</h1>
     {% endif %}
 
     <div class="container-profile" style="height: 60vh;">
@@ -20,11 +28,11 @@
             <tbody>
             <tr>
                 <td class="text-end" style="width: 50%;">Prénom :</td>
-                <td style="width: 50%;">{{ participant.Lastname }}</td>
+                <td style="width: 50%;">{{ participant.Firstname }}</td>
             </tr>
             <tr>
                 <td class="text-end" style="width: 50%;">Nom :</td>
-                <td style="width: 50%;">{{ participant.Firstname }}</td>
+                <td style="width: 50%;">{{ participant.Lastname }}</td>
             </tr>
             <tr>
                 <td class="text-end" style="width: 50%;">Téléphone :</td>
@@ -57,8 +65,3 @@
 
     </div>
 {% endblock %}
-
-{% block title %}
-    Affichage de {{ participant.Lastname }}
-{% endblock %}
-
