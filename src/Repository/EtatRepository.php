@@ -16,6 +16,15 @@ class EtatRepository extends ServiceEntityRepository
         parent::__construct($registry, Etat::class);
     }
 
+    public function findByNom(string $value): ?Etat
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.nom = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return Etat[] Returns an array of Etat objects
     //     */
