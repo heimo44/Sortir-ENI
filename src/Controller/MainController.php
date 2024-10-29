@@ -14,32 +14,46 @@ class MainController extends AbstractController
     #[Route('/accueil', name: 'main_accueil', methods: ['GET', 'POST'])]
     public function accueil(Request $request, SortieRepository $sortieRepository): Response
     {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        $campus = $user->getCampus();
+
         // Création du formulaire AccueilType
-        $accueilForm = $this->createForm(AccueilType::class);
+        $accueilForm = $this->createForm(AccueilType::class, null, [
+            'campus_default' => $campus
+        ]);
         $accueilForm->handleRequest($request);
 
         // Récupérer la date du jour
         $currentDate = new \DateTime();
 
-        // Récupérer l'utilisateur connecté
-        $user = $this->getUser();
+//        // Initialiser les critères de filtre
+//        $campus = null;
+//        $isOrganizer = false;
+        // Initialiser les critères de recherche
+        $criteria = $accueilForm->getData() ?? [];
+        $criteria['campus'] = $criteria['campus'] ?? $campus; // Définit le campus par défaut si absent
 
-        // Initialiser les critères de filtre
-        $campus = null;
-        $isOrganizer = false;
+        // Vérifier si le formulaire est soumis et ajouter le campus par défaut si nécessaire
+//        if ($accueilForm->isSubmitted() && !isset($criteria['campus'])) {
+//            $criteria['campus'] = $campus;
+//        }
 
-        // Vérifier si le formulaire a été soumis et est valide
-        if ($accueilForm->isSubmitted() && $accueilForm->isValid()) {
-            $data = $accueilForm->getData();
-            $campus = $data['campus'] ?? null;
-            $isOrganizer = $data['organisateur'] ?? false;
-        }
+        // Ajouter l'utilisateur pour le filtre d'organisateur si nécessaire
+        $isOrganizer = $criteria['organisateur'] ?? false;
+
+//        // Vérifier si le formulaire a été soumis et est valide
+//        if ($accueilForm->isSubmitted() && $accueilForm->isValid()) {
+//            $data = $accueilForm->getData();
+//            $campus = $data['campus'] ?? null;
+//            $isOrganizer = $data['organisateur'] ?? false;
+//        }
 
         // Récupérer les sorties en fonction des critères
-        dump($campus, $isOrganizer, $user);
-        $sorties = $sortieRepository->findByFilters($campus, $isOrganizer, $user);
+        //dump($campus, $isOrganizer, $user);
+        $sorties = $sortieRepository->findByFilters($criteria['campus'], $isOrganizer, $user);
 
-        dump($sorties);
+        //dump($sorties);
 
         return $this->render('main/accueil.html.twig', [
             'accueilForm' => $accueilForm->createView(),

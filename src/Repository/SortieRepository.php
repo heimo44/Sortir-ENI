@@ -17,7 +17,7 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByFilters($campus, $organisateur, $inscrit, $nonInscrit, $passe, $nomSortie, $dateDebut, $dateFin, $userId)
+    public function findByFilters($campus, $organisateur, $inscrit, $nonInscrit, $passe, $nomSortie, $dateDebut, $dateFin, $userId, $user, $isOrganizer)
     {
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.organisateur', 'o')
@@ -60,76 +60,13 @@ class SortieRepository extends ServiceEntityRepository
         if ($dateFin) {
             $qb->andWhere('s.dateHeureDebut <= :dateFin')
                 ->setParameter('dateFin', $dateFin);
+
+        if ($isOrganizer) {
+            $qb->andWhere('s.organisateur = :user')
+                ->setParameter('user', $user);
         }
 
-        return $qb->getQuery()->getResult();
+            return $qb->getQuery()->getResult();
+        }
     }
 }
-
-
-//    public function findByFilters(
-//        ?Campus $campus = null,
-//        ?string $searchTerm = null,
-//        ?\DateTime $dateDebut = null,
-//        ?\DateTime $dateFin = null,
-//        ?bool $isOrganisateur = false,
-//        ?bool $isInscrit = false,
-//        ?bool $isNonInscrit = false,
-//        ?bool $isSortiePassee = false,
-//        ?Participant $user = null
-//    ): array {
-//        $qb = $this->createQueryBuilder('s')
-//            ->leftJoin('s.campus', 'c')
-//            ->leftJoin('s.participant', 'p')
-//            ->leftJoin('s.participants', 'inscrits');
-//
-//        // Filtre par campus
-//        if ($campus) {
-//            $qb->andWhere('s.campus = :campus')
-//                ->setParameter('campus', $campus);
-//        }
-//
-//        // Filtre par nom de sortie
-//        if ($searchTerm) {
-//            $qb->andWhere('s.nom LIKE :searchTerm')
-//                ->setParameter('searchTerm', '%' . $searchTerm . '%');
-//        }
-//
-//        // Filtre par date
-//        if ($dateDebut) {
-//            $qb->andWhere('s.dateHeureDebut >= :dateDebut')
-//                ->setParameter('dateDebut', $dateDebut);
-//        }
-//        if ($dateFin) {
-//            $qb->andWhere('s.dateHeureDebut <= :dateFin')
-//                ->setParameter('dateFin', $dateFin);
-//        }
-//
-//        // Filtre organisateur
-//        if ($isOrganisateur && $user) {
-//            $qb->andWhere('s.participant = :organisateur')
-//                ->setParameter('organisateur', $user);
-//        }
-//
-//        // Filtre inscrit
-//        if ($isInscrit && $user) {
-//            $qb->andWhere(':user MEMBER OF s.participants')
-//                ->setParameter('user', $user);
-//        }
-//
-//        // Filtre non inscrit
-//        if ($isNonInscrit && $user) {
-//            $qb->andWhere(':user NOT MEMBER OF s.participants')
-//                ->setParameter('user', $user);
-//        }
-//
-//        // Filtre sorties passées
-//        if ($isSortiePassee) {
-//            $qb->andWhere('s.dateHeureDebut < :now')
-//                ->setParameter('now', new \DateTime());
-//        }
-//
-//        return $qb->getQuery()->getResult();
-//    }
-
-//}

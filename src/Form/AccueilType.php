@@ -20,7 +20,9 @@ class AccueilType extends AbstractType
             ->add('campus', EntityType::class, [
                 'label' => 'Campus',
                 'class' => Campus::class,
-                'choice_label' => 'nom',  // Assure-toi que 'nom' est bien l'attribut dans ton entité Campus
+                'choice_label' => 'nom',
+                'data' => $options['campus_default'], // Définir la valeur par défaut
+                'disabled' => true, // Désactiver le champ
                 'placeholder' => 'Veuillez choisir votre campus',
             ])
             ->add('nom_sortie', TextType::class, [
@@ -75,6 +77,7 @@ class AccueilType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([]);
+        $resolver->setRequired('campus_default'); // Rendre l'option campus_default obligatoire
     }
 
 }

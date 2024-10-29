@@ -49,6 +49,10 @@ body {
 .column-2 div {
     height: 1.4rem;
 }
+.table-container {
+    max-height: 150px; /* Ajuste la hauteur selon tes besoins */
+    overflow-y: auto; /* Ajoute un ascenseur vertical */
+}
 .container-profile {
     display: flex;
     flex-direction: column;
