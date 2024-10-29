@@ -43,12 +43,11 @@ class ParticipantType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'nom',
             ])
-            // TO-DO : itération 2 si j'ai terminé ce truc relou avec la connexion
-            /*->add('image', FileType::class, [
-                'label' => 'Image (JPEG, PNG)',
+            ->add('image', FileType::class, [
+                'label' => '(JPEG, PNG)',
                 'mapped' => false, // We'll handle the file upload manually
                 'required' => false,
-            ])*/
+            ])
         ;
 
         if ($options['user_creation']) {

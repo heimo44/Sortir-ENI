@@ -7,6 +7,8 @@ use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -67,6 +69,34 @@ class ParticipantController extends AbstractController
         }
 
         if ($participantForm->isSubmitted() && $participantForm->isValid()) {
+            // Handle file upload
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $participantForm->get('profileImage')->getData();
+
+            if ($uploadedFile) {
+                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename .'-'.uniqid().'.'. $uploadedFile->guessExtension();
+
+                try {
+                    $uploadedFile->move(
+                        $this->getParameter('profile_images_directory'),
+                        $newFilename
+                    );
+
+                    // Delete old profile image if it exists
+                    if ($participant->getProfileImageFilename()) {
+                        $oldFilePath = $this->getParameter('profile_images_directory') . '/' . $participant->getProfileImageFilename();
+                        if (file_exists($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
+                    }
+
+                    $participant->setProfileImageFilename($newFilename);
+                } catch (FileException $exception) {
+                    $this->addFlash('danger', 'There was an error uploading your profile image');
+                }
+            }
             $newPassword = $participantForm->get('newPassword')->getData();
             $confirmNewPassword = $participantForm->get('newPasswordConfirmation')->getData();
 

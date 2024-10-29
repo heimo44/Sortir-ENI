@@ -95,6 +95,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 4000, nullable: true)]
     private ?string $newPasswordConfirmation = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $profileImageFilename = null;
+
     public function __construct()
     {
         $this->inscrit = new ArrayCollection();
@@ -320,4 +323,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getProfileImageFilename(): ?string
+    {
+        return $this->profileImageFilename;
+    }
+
+    public function setProfileImageFilename(?string $profileImageFilename): self
+    {
+        $this->profileImageFilename = $profileImageFilename;
+        return $this;
+    }
 }
+
+
