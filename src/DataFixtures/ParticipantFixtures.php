@@ -9,7 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class ParticipantFixtures extends Fixture
+class ParticipantFixtures extends Fixture implements DependentFixtureInterface
 {
     private $campusList = ["NANTES", "RENNES", "QUIMPER", "NIORT"];
 
@@ -42,12 +42,14 @@ class ParticipantFixtures extends Fixture
                 $firstname = $faker->firstName;
                 $user->setLastname($lastname);
                 $user->setFirstName($firstname);
+
                 // Supprimer les accents pour l'adresse e-mail
                 $normalizedFirstname = iconv('UTF-8', 'ASCII//TRANSLIT', $firstname);
                 $normalizedLastname = iconv('UTF-8', 'ASCII//TRANSLIT', $lastname);
                 $email = strtolower(
                     preg_replace('/[^a-zA-Z0-9.]/', '', $normalizedFirstname . '.' . $normalizedLastname) . '@sortir.fr'
                 );
+
                 $user->setEmail($email);
                 $user->setTelephone($faker->numerify('06########'));
                 $user->setPassword($this->passwordHarsher->hashPassword($user, "123456"));

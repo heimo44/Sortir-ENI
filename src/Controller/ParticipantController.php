@@ -12,8 +12,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[IsGranted('ROLE_USER')]
 #[Route('/participant')]
@@ -33,9 +34,8 @@ class ParticipantController extends AbstractController
         $participant = $participantRepository->find($id);
 
         if(!$participant){
-            // A décommenter s'il y a un flash display sur la page main_accueil
-            // $this->addFlash('danger', "Le participant n'existe pas.");
-            return $this->redirectToRoute('main_accueil'); // Change to your desired route
+            $this->addFlash('danger', "Le participant n'existe pas.");
+            return $this->redirectToRoute('main_accueil');
         }
 
         return $this->render('participant/show.html.twig', [
@@ -46,14 +46,16 @@ class ParticipantController extends AbstractController
     #[Route('/{id}/edit', name: 'participant_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(ParticipantRepository $participantRepository, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher, $id): Response
     {
-        // Renvoyer l'utilisateur sur la page d'accueil si l'ID ne correspond à aucun participant
         $participant = $participantRepository->find($id);
 
         if (!$participant) {
-            // A décommenter s'il y a un flash display sur la page cible
-            // $this->addFlash('danger', "Le participant n'existe pas.");
-
+            $this->addFlash('danger', "Le participant n'existe pas.");
             return $this->redirectToRoute('main_accueil');
+        }
+
+        $user = $this->getUser();
+        if(!$user || $participant->getEmail() !== $user->getUserIdentifier()){
+            return $this->redirectToRoute('app_login');
         }
 
         $participantForm = $this->createForm(ParticipantType::class, $participant, [
@@ -61,79 +63,32 @@ class ParticipantController extends AbstractController
         ]);
         $participantForm->handleRequest($request);
 
-        $user = $this->getUser();
-
-        // Pour limiter l'accès à la page d'édition seulement à l'utilisateur qui édite son propre profil
-        if(!$user || $participantForm->get('email')->getData() != $user->getUserIdentifier()){
-            return $this->redirectToRoute('app_login');
-        }
-
         if ($participantForm->isSubmitted() && $participantForm->isValid()) {
-            // Handle file upload
-            /** @var UploadedFile $uploadedFile */
-            $uploadedFile = $participantForm->get('profileImage')->getData();
+            $this->handleProfileImageUpload($participant, $participantForm);
 
-            if ($uploadedFile) {
-                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename .'-'.uniqid().'.'. $uploadedFile->guessExtension();
-
-                try {
-                    $uploadedFile->move(
-                        $this->getParameter('profile_images_directory'),
-                        $newFilename
-                    );
-
-                    // Delete old profile image if it exists
-                    if ($participant->getProfileImageFilename()) {
-                        $oldFilePath = $this->getParameter('profile_images_directory') . '/' . $participant->getProfileImageFilename();
-                        if (file_exists($oldFilePath)) {
-                            unlink($oldFilePath);
-                        }
-                    }
-
-                    $participant->setProfileImageFilename($newFilename);
-                } catch (FileException $exception) {
-                    $this->addFlash('danger', 'There was an error uploading your profile image');
-                }
-            }
             $newPassword = $participantForm->get('newPassword')->getData();
             $confirmNewPassword = $participantForm->get('newPasswordConfirmation')->getData();
 
-            if($newPassword === '' && $newPassword !== $confirmNewPassword) {
+            if($newPassword !== '' && $newPassword === $confirmNewPassword) {
+                $hashedPassword = $userPasswordHasher->hashPassword($participant, $newPassword);
+                $participant->setPassword($hashedPassword);
+            } elseif($newPassword !== '' && $newPassword !== $confirmNewPassword) {
                 $this->addFlash("danger", "Les mots de passe ne correspondent pas");
+                return $this->redirectToRoute('participant_edit', ['id' => $participant->getId()]);
             }
 
-            if($newPassword === $confirmNewPassword) {
-                if($newPassword !== ''){
-                    // Pour crypter le nouveau mot de passe
-                    $hashedPassword = $userPasswordHasher->hashPassword($participant, $newPassword);
-                    $participant->setPassword($hashedPassword);
-                }
+            $participant->setNewPassword(null);
+            $participant->setNewPasswordConfirmation(null);
 
-                // Pour purger les mots de passes de la base de données (données non cryptées)
-                $participant->setNewPassword(null);
-                $participant->setNewPasswordConfirmation(null);
+            $em->persist($participant);
+            $em->flush();
 
-                $em->persist($participant);
-                $em->flush();
-
-                // Si changement de mot de passe, reconnexion obligatoire
-                if($newPassword !== ''){
-                    // A décommenter s'il y a un flash display sur la page login
-                    // $this->addFlash("success", "Utilisateur mis à jour, veuillez vous reconnecter !");
-
-                    return $this->redirectToRoute('app_logout', [
-                        'id' => $participant->getId()
-                    ]);
-                // Sinon, retourne sur la page d'affichage du profil
-                } else {
-                    $this->addFlash("success", "Utilisateur mis à jour !");
-
-                    return $this->redirectToRoute('participant_show', [
-                        'id' => $participant->getId(),
-                    ]);
-                }
+            if($newPassword !== ''){
+                $this->addFlash("success", "Utilisateur mis à jour, veuillez vous reconnecter !");
+                return $this->redirectToRoute('app_logout', ['id' => $participant->getId()]);
+            } else {
+                $this->addFlash("success", "Utilisateur mis à jour !");
+                return $this->redirectToRoute('participant_show', ['id' => $participant->getId()]);
             }
         }
 
@@ -147,37 +102,27 @@ class ParticipantController extends AbstractController
     #[Route('/create', name: 'participant_create', methods: ['GET', 'POST'])]
     public function create(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
     {
-        // Création d'un nouveau participant avec des valeurs par défaut
         $participant = new Participant();
         $participant->setPassword($userPasswordHasher->hashPassword($participant, '123456'));
         $participant->setActif(true);
 
-        // Création du formulaire
         $participantForm = $this->createForm(ParticipantType::class, $participant, [
             'user_creation' => true,
         ]);
         $participantForm->handleRequest($request);
 
         if ($participantForm->isSubmitted() && $participantForm->isValid()) {
-            // Pour crypter le nouveau mot de passe
             $newPassword = $participantForm->get('newPassword')->getData();
             if ($newPassword !== '') {
                 $hashedPassword = $userPasswordHasher->hashPassword($participant, $newPassword);
                 $participant->setPassword($hashedPassword);
             }
 
-            // Pour ajouter un nouveau rôle selon la checkbox
             $role = $participantForm->get('roles')->getData();
-            if($role == ['ROLE_ADMIN']){
-                $participant->setRoles(['ROLE_ADMIN']);
-            } else {
-                $participant->setRoles(['ROLE_USER']);
-            }
+            $participant->setRoles($role);
 
-            // Pour purger le mot de passe de la base de données (données non cryptées)
             $participant->setNewPassword(null);
 
-            // Persister l'entité
             $em->persist($participant);
             $em->flush();
 
@@ -189,5 +134,35 @@ class ParticipantController extends AbstractController
             'participant' => $participant,
             "participantForm" => $participantForm->createView(),
         ]);
+    }
+
+    private function handleProfileImageUpload(Participant $participant, $form): void
+    {
+        /** @var UploadedFile $uploadedFile */
+        $uploadedFile = $form->get('profileImageFilename')->getData();
+
+        if ($uploadedFile) {
+            $slugger = new AsciiSlugger();
+            $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename .'-'.uniqid().'.'. $uploadedFile->guessExtension();
+
+            try {
+                $uploadedFile->move(
+                    $this->getParameter('assets_uploads_images'),
+                    $newFilename
+                );
+
+                $oldFilePath = $this->getParameter('assets_uploads_images') . '/' . $participant->getProfileImageFilename();
+
+                if ($participant->getProfileImageFilename() && file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+
+                $participant->setProfileImageFilename($newFilename);
+            } catch (FileException $exception) {
+                $this->addFlash('danger', 'There was an error uploading your profile image');
+            }
+        }
     }
 }

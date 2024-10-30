@@ -76,13 +76,12 @@ body {
     background-color: transparent;
     border-radius: 5px;
     width: 40vw;
-    margin: 0 auto;
+    margin-right: 200px;
 }
 .table-profile td {
     background-color: transparent;
     padding: 10px;
 }
-
 
 
 /*MEDIA*/
