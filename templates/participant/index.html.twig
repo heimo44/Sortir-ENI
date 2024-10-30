@@ -1,14 +1,71 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ParticipantController!{% endblock %}
+{% block title %}Gestion des utilisateurs{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>JE SUIS LE ROI DU MOOOOOOOOOOONDE</h1>
-</div>
+    <div class="text-center mt-2 mb-5">
+        <h1>Gestion des utilisateurs</h1>
+    </div>
+
+    <div class="text-center mb-5">
+        <a href="{{ path('participant_create') }}"><button type="button" class="btn btn-primary">Créer un utilisateur</button></a>
+    </div>
+
+    <div class="text-center mb-5">
+        <div class="table-container-user">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Pseudo</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for participant in participants %}
+                <tr>
+                    <td>{{ participant.firstname }}</td>
+                    <td>{{ participant.lastname }}</td>
+                    <td>
+                        {% if participant.pseudo is null %}
+                            <i>Pas de pseudo</i>
+                        {% else %}
+                            <b>{{ participant.pseudo }}</b>
+                        {% endif %}
+                    </td>
+                    <td>{{ participant.email }}</td>
+                    <td>
+                        {% if participant.roles[0] == 'ROLE_ADMIN' %}
+                            <span class="required-text bold-text">Administrateur</span>
+                        {% elseif participant.roles[0] == 'ROLE_USER' %}
+                            Utilisateur
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('participant_show', { 'id': participant.id }) }}" class="btn btn-primary btn-sm">Voir</a>
+                        {% if (app.user.id != participant.id and participant.roles[0] != 'ROLE_ADMIN') %}
+                            <form action="{{ path('participant_show', { 'id': participant.id }) }}" method="POST" style="display: inline;">
+                                <input type="hidden" name="actif" value="{{ participant.isActif ? '0' : '1' }}">
+                                <button type="submit" class="btn {{ participant.isActif ? 'btn-danger' : 'btn-success' }} btn-sm">
+                                    {{ participant.isActif ? 'Désactiver' : 'Activer' }}
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">Aucun participant trouvé.</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
 {% endblock %}

@@ -20,22 +20,35 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 #[Route('/participant')]
 class ParticipantController extends AbstractController
 {
-    #[Route('/', name: 'participant_index')]
-    public function index(): Response
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/', name: 'participant_index', methods:['GET', 'POST'])]
+    public function index(ParticipantRepository $participantRepository): Response
     {
+        $listParticipants = $participantRepository->findAll();
+
         return $this->render('participant/index.html.twig', [
-            'controller_name' => 'ParticipantController',
+            'participants' => $listParticipants,
         ]);
     }
 
-    #[Route('/{id}', name: 'participant_show', requirements: ['id' => '\d+'], methods:['GET'])]
-    public function show(ParticipantRepository $participantRepository, $id): Response
+    #[Route('/{id}', name: 'participant_show', requirements: ['id' => '\d+'], methods:['GET', 'POST'])]
+    public function show(ParticipantRepository $participantRepository, Request $request, EntityManagerInterface $entityManager, $id): Response
     {
         $participant = $participantRepository->find($id);
 
         if(!$participant){
             $this->addFlash('danger', "Le participant n'existe pas.");
             return $this->redirectToRoute('main_accueil');
+        }
+
+        if ($request->isMethod('POST')) {
+            $actif = $request->request->get('actif');
+            $participant->setIsActif($actif === '1');
+            $entityManager->persist($participant);
+            $entityManager->flush();
+
+            $this->addFlash('success', "Le statut du participant a été mis à jour avec succès.");
+            return $this->redirectToRoute('participant_show', ['id' => $participant->getId()]);
         }
 
         return $this->render('participant/show.html.twig', [
@@ -72,7 +85,7 @@ class ParticipantController extends AbstractController
             if($newPassword !== '' && $newPassword === $confirmNewPassword) {
                 $hashedPassword = $userPasswordHasher->hashPassword($participant, $newPassword);
                 $participant->setPassword($hashedPassword);
-            } elseif($newPassword !== '' && $newPassword !== $confirmNewPassword) {
+            } elseif ($newPassword !== '' && $newPassword !== $confirmNewPassword) {
                 $this->addFlash("danger", "Les mots de passe ne correspondent pas");
                 return $this->redirectToRoute('participant_edit', ['id' => $participant->getId()]);
             }
@@ -104,7 +117,7 @@ class ParticipantController extends AbstractController
     {
         $participant = new Participant();
         $participant->setPassword($userPasswordHasher->hashPassword($participant, '123456'));
-        $participant->setActif(true);
+        $participant->setIsActif(true);
 
         $participantForm = $this->createForm(ParticipantType::class, $participant, [
             'user_creation' => true,
@@ -119,11 +132,12 @@ class ParticipantController extends AbstractController
             }
 
             $role = $participantForm->get('roles')->getData();
-            if($role == ['ROLE_ADMIN']){
-                $participant->setRoles(['ROLE_ADMIN']);
+            if($role){
+                $role = 'ROLE_ADMIN';
             } else {
-                $participant->setRoles(['ROLE_USER']);
+                $role = 'ROLE_USER';
             }
+            $participant->setRoles([$role]);
 
             $participant->setNewPassword(null);
 

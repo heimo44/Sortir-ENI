@@ -6,9 +6,10 @@ use App\Entity\Campus;
 use App\Entity\Participant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,40 +21,42 @@ class ParticipantType extends AbstractType
     {
         $builder
             ->add('Lastname', TextType::class, [
-                'label' => 'Nom',
+                'label' => 'Nom <span class="red-text">*</span>',
+                'label_html' => true,
             ])
             ->add('Firstname', TextType::class, [
-                'label' => 'Prénom'
+                'label' => 'Prénom <span class="red-text">*</span>',
+                'label_html' => true,
             ])
             ->add('telephone', TextType::class, [
-                'label' => 'Numéro de téléphone'
+                'label' => 'Numéro de téléphone <span class="red-text">*</span>',
+                'label_html' => true,
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email'
+                'label' => 'Email <span class="red-text">*</span>',
+                'label_html' => true,
             ])
             ->add('newPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'required' => false,
                 'empty_data' => '',
-                'attr' => [
-                    'mapped' => false,
-                ]
-            ])
-            ->add('campus', EntityType::class, [
-                'class' => Campus::class,
-                'choice_label' => 'nom',
+                'mapped' => false,
             ])
         ;
 
         if ($options['user_creation']) {
             $builder
-                ->add('roles', ChoiceType::class, [
-                    'label' => false,
-                    'choices' => [
-                        "L'utilisateur est un administrateur" => 'ROLE_ADMIN',
+                ->add('roles', CheckboxType::class, [
+                    'label' => "L'utilisateur est un administrateur",
+                    'required' => false,
+                    'mapped' => false,
+                    'attr' => [
+                        'value' => 'ROLE_ADMIN',
                     ],
-                    'multiple' => true,
-                    'expanded' => true,
+                ])
+                ->add('campus', EntityType::class, [
+                    'class' => Campus::class,
+                    'choice_label' => 'nom',
                 ]);
         }
 
@@ -64,16 +67,15 @@ class ParticipantType extends AbstractType
                     'required' => false,
                 ])
                 ->add('newPasswordConfirmation', PasswordType::class, [
-                    'label' => 'Confirmer le mot de passe',
+                    'label' => 'Confirmer le mot de passe <span class="red-text">(si le champ précédent est rempli)</span>',
+                    'label_html' => true,
                     'required' => false,
                     'empty_data' => '',
-                    'attr' => [
-                        'mapped' => false,
-                    ]
+                    'mapped' => false,
                 ])
                 ->add('profileImageFilename', FileType::class, [
-                    'label' => '(JPEG, PNG)',
-                    'mapped' => false, // We'll handle the file upload manually
+                    'label' => 'Image de profil (format JPEG ou PNG)',
+                    'mapped' => false,
                     'required' => false,
                 ]);
         }
