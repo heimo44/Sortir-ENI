@@ -43,6 +43,7 @@ class Sortie
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull(message: "La date limite d'inscription est obligatoire.")]
     #[Assert\Type("\DateTimeInterface", message: "La date limite d'inscription n'est pas valide.")]
+    #[Assert\GreaterThan(value: "yesterday", message: "La date limite d'inscription doit être à partir d'aujourd'hui.")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]
@@ -78,6 +79,9 @@ class Sortie
 
     #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'organisateur')]
     private ?Participant $organisateur = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motif = null;
 
     public function __construct()
     {
@@ -232,6 +236,18 @@ class Sortie
     public function setOrganisateur(?Participant $organisateur): static
     {
         $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getMotif(): ?string
+    {
+        return $this->motif;
+    }
+
+    public function setMotif(?string $motif): static
+    {
+        $this->motif = $motif;
 
         return $this;
     }

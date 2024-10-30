@@ -15,12 +15,11 @@
 
             lieuSelect.addEventListener('change', function() {
                 const lieuId = this.value;
-
                 if (lieuId) {
                     fetch(`{{ path('lieu_details') }}?id=${lieuId}`)
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error('Network response was not ok');
+                                throw new Error('Verifiez votre connexion');
                             }
                             return response.json();
                         })
@@ -31,7 +30,7 @@
                             latitudeInput.value = data.latitude;
                         })
                         .catch(error => {
-                            console.error('There was a problem with the fetch operation:', error);
+                            console.error('Probleme lors de la recupération des données', error);
                         });
                 } else {
                     rueInput.value = '';

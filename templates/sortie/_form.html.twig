@@ -1,5 +1,27 @@
-{{ form_start(form) }}
+{{ form_start(form, { 'attr': { 'id': 'formSortie' } }) }}
     {{ form_widget(form) }}
-        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
-        <a class="btn btn-secondary" href="{{ path('main_accueil') }}">Retour à l'accueil</a>
+    {% if app.request.attributes.get('_route') == 'app_sortie_edit' and sortie.etat.libelle == 'Créée'%}
+        <button type="submit" name="action" value="enregistrer" class="btn btn-secondary">Enregistrer</button>
+    {% elseif  app.request.attributes.get('_route') == 'app_sortie_new'%}
+        <button type="submit" name="action" value="enregistrer" class="btn btn-secondary">Enregistrer</button>
+    {% endif %}
+    <button type="submit" name="action" value="publier" class="btn btn-primary">Publier la sortie</button>
+    {% if app.request.attributes.get('_route') == 'app_sortie_new' %}
+        <button type="button" class="resetButton btn btn-secondary">Annuler</button>
+    {% elseif app.request.attributes.get('_route') == 'app_sortie_edit' %}
+        <a type="button" class="resetButton btn btn-danger" href="{{ path('app_sortie_cancel', {'id': sortie.id}) }}">Supprimer la sortie</a>
+        <button type="button" class="resetButton btn btn-secondary">Annuler</button>
+    {% endif %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const resetButtons = document.getElementsByClassName('resetButton');
+        if (resetButtons.length > 0) {
+            Array.from(resetButtons).forEach(button => {
+                button.addEventListener('click', function() {
+                    document.getElementById('formSortie').reset();
+                });
+            });
+        }
+    });
+</script>
 {{ form_end(form) }}
