@@ -31,6 +31,15 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         $this->getEntityManager()->flush();
     }
 
+    public function participantCheckIsActif(string  $participant): bool{
+
+        $user=$this->findOneBy(['email' => $participant]);
+        if($user-> getIsActif()){
+            return true;
+        }else{
+            return false;
+        }
+}
 
     //    /**
     //     * @return Participant[] Returns an array of Participant objects
