@@ -53,7 +53,7 @@ class SortieType extends AbstractType
             ->add('dateHeureDebut', null, [
                 'widget' => 'single_text',
                 'attr' => [
-                    'min' => (new \DateTime())->format('Y-m-d\TH:i'), // Minimum date set to today
+                    'min' => (new \DateTime('+1 day'))->format('Y-m-d\TH:i'), // Default min to one day from now
                 ],
                 'constraints' => [
                     new Assert\NotNull(['message' => 'La date et l\'heure de début sont obligatoires.']),
@@ -62,7 +62,7 @@ class SortieType extends AbstractType
             ->add('dateLimiteInscription', null, [
                 'widget' => 'single_text',
                 'attr' => [
-                    'min' => (new \DateTime('+1 day'))->format('Y-m-d\TH:i'), // Default min to one day from now
+                    'min' => (new \DateTime('+0 day'))->format('Y-m-d\TH:i'), // Minimum date set to today
                 ],
                 'constraints' => [
                     new Assert\NotNull(['message' => 'Le nombre maximum d\'inscriptions est obligatoire.']),

@@ -32,6 +32,7 @@ class Sortie
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull(message: "La date et l'heure de début sont obligatoires.")]
     #[Assert\Type("\DateTimeInterface", message: "La date de début n'est pas valide.")]
+    #[Assert\GreaterThan(propertyPath: "dateLimiteInscription", message: "La date de début doit être après la date limite d'inscription.")]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
@@ -42,7 +43,6 @@ class Sortie
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull(message: "La date limite d'inscription est obligatoire.")]
     #[Assert\Type("\DateTimeInterface", message: "La date limite d'inscription n'est pas valide.")]
-    #[Assert\GreaterThan(propertyPath: "dateHeureDebut", message: "La date limite d'inscription doit être après la date de début.")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]
