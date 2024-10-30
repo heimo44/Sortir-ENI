@@ -44,7 +44,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
                 $sortie->setInfosSortie($faker->sentence(20));
 
                 // Attribue un état aléatoire à la sortie
-                $etat = $this->getReference('etat_' . $faker->randomElement(["Créée", "Ouverte", "Clôturée", "Activité en cours", "passée", "Annulée"]));
+                $etat = $this->getReference('etat_' . $faker->randomElement(["Créée", "Ouverte", "Clôturée", "Activité en cours", "Passée", "Annulée"]));
                 $sortie->setEtat($etat);
 
                 // Attribue une valeur aléatoire au campus
