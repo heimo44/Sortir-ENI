@@ -37,7 +37,6 @@ class SortieType extends AbstractType
         $postalCode = $this->villeRepository->findOneBy(['nom' => $campus->getNom()]);
         $postalPrefix = substr($postalCode->getCodePostal(), 0, 2);
 
-        $lieu = new Lieu();
         $builder
             ->add('nom', Type\TextType::class, [
                 'constraints' => [

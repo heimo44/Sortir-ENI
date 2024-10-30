@@ -2,22 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Campus;
 use App\Entity\Etat;
-use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\SortieType;
-use App\Repository\CampusRepository;
 use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/sortie')]
 final class SortieController extends AbstractController
@@ -31,7 +26,7 @@ final class SortieController extends AbstractController
     #[Route(name: 'app_sortie_index', methods: ['GET'])]
     public function index(SortieRepository $sortieRepository): Response
     {
-        return $this->render('sortie/index.html.twig', [
+        return $this->render('main/accueil.html.twig', [
             'sorties' => $sortieRepository->findAll(),
         ]);
     }
@@ -44,19 +39,26 @@ final class SortieController extends AbstractController
         $sortie = new Sortie();
         $sortie->setOrganisateur($currentUser);
         $sortie->setCampus($campus);
-        $etatRepository = $entityManager->getRepository(Etat::class);
-        $etatOuverte = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
-        if (!$etatOuverte) {
-            $etatOuverte = new Etat();
-            $etatOuverte->setLibelle('Ouverte');
-            $entityManager->persist($etatOuverte);
-            $entityManager->flush();
+        $etat = new Etat();
+        $etat->setLibelle('Créée');
+        if ($request->isMethod('POST')) {
+            dump($request->getContent());
+            if ($request->request->get('action') === 'sauvegarder') {
+                $etat->setLibelle('Créée');
+                $entityManager->flush();
+            }
+            if ($request->request->get('action') === 'publier') {
+                $etat->setLibelle('Ouverte');
+                $entityManager->flush();
+            }
         }
-        $sortie->setEtat($etatOuverte);
+        $entityManager->persist($etat);
+        $entityManager->flush();
+
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setEtat($etat);
             $entityManager->persist($sortie);
             $entityManager->flush();
 
@@ -78,14 +80,29 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_sortie_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
     {
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($request->request->get('annulerSortie')) {
+            $etatCancel = $etatRepository->findOneBy(['libelle' => 'Annulée']);
+            $sortie->setEtat($etatCancel);
             $entityManager->flush();
+            return $this->redirectToRoute('main_accueil');
+        }
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $action = $request->request->get('action');
+            if ($action === 'sauvegarder') {
+                    $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
+                    $sortie->setEtat($etat);
+                }elseif ($action === 'publier') {
+                    $etat = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
+                    $sortie->setEtat($etat);
+            }
+            $entityManager->persist($sortie);
+            $entityManager->flush();
             return $this->redirectToRoute('main_accueil', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -95,14 +112,40 @@ final class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/cancel', name: 'app_sortie_cancel', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function cancel(Request $request, Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository, SortieRepository $sortieRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($sortie);
-            $entityManager->flush();
+        $sortie = $sortieRepository->findOneBy(['id' => $sortie->getId()]);
+
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        $currentDateTime = new \DateTime();
+
+        if ($sortie->getDateHeureDebut() < $currentDateTime) {
+            $this->addFlash('error', 'Vous ne pouvez pas annuler une sortie dont la date est déjà passée.');
         }
 
-        return $this->redirectToRoute('main_accueil', [], Response::HTTP_SEE_OTHER);
+        if ($request->isMethod('POST')) {
+            $motif = $request->request->get('motif');
+
+            if ($request->request->get('action') === 'save') {
+                $sortie->setMotif($motif);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_sortie_cancel', ['id' => $sortie->getId()], Response::HTTP_SEE_OTHER);
+            } elseif ($request->request->get('action') === 'cancel') {
+                $etatCancel = $etatRepository->findOneBy(['libelle' => 'Annulée']);
+                $sortie->setEtat($etatCancel);
+                $sortie->setMotif($motif);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('main_accueil', ['id' => $sortie->getId()], Response::HTTP_SEE_OTHER);
+            }
+        }
+        return $this->render('sortie/cancel.html.twig', [
+            'sortie' => $sortie,
+            'form' => $form,
+        ]);
     }
 }

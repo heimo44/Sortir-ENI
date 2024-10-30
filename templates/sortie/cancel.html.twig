@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler la sortie{% endblock %}
+
+{% block body %}
+    <div class="d-flex gap-5" style="flex-direction: column; align-items: center">
+        <h1>Annuler une sortie</h1>
+        {% if form.vars.errors|length > 0 %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for error in form.vars.errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <table class="table w-50 table-borderless d-flex justify-content-start">
+            <tbody>
+            <tr>
+                <th class="bg-transparent">Nom de la sortie :</th>
+                <td class="bg-transparent">{{ sortie.nom }}</td>
+            </tr>
+            <tr>
+                <th class="bg-transparent">Date de la sortie :</th>
+                <td class="bg-transparent">{{ sortie.dateHeureDebut|date('Y-m-d H:i') }}</td>
+            </tr>
+            <tr>
+                <th class="bg-transparent">Campus :</th>
+                <td class="bg-transparent">{{ sortie.campus.nom }}</td>
+            </tr>
+            <tr>
+                <th class="bg-transparent">Lieu :</th>
+                <td class="bg-transparent">{{ sortie.lieu.rue }} {{ sortie.lieu.ville.codePostal }} {{ sortie.lieu.ville.nom }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4 d-flex" style=" justify-content: center; align-items: center">
+        <form method="POST" class="w-50" action="{{ path('app_sortie_cancel', {'id': sortie.id}) }}">
+            <label for="motif" class="fw-bold">Motif :</label>
+            <textarea id="motif" name="motif" class="form-control" rows="4">
+                {{ sortie.motif }}
+            </textarea>
+            <div style="display: flex; justify-content: center; gap: 2rem">
+                <button type="submit" name="action" value="save" class="btn btn-primary mt-2">Enregistrer</button>
+                <button type="submit" name="action" value="cancel" class="btn btn-danger mt-2">Annuler la sortie</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
