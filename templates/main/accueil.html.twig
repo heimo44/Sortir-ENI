@@ -80,15 +80,17 @@
 {{ form_end(accueilForm) }}
 
     <div class="mt-5">
-        <h2>Sorties</h2>
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
                 <th>Clôture</th>
+                <th>Inscrits/Places</th>
                 <th>État</th>
+                <th>Inscrits</th>
                 <th>Organisateur</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -97,8 +99,26 @@
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
                     <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
+                    <td>{{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
+                    <td>
+{#                        {% for participant in sortie.participants %}#}
+{#                            {{ participant.firstname }} {{ participant.lastname }}<br>#}
+{#                        {% else %}#}
+{#                            Aucun inscrit#}
+{#                        {% endfor %}#}
+                        {% if sortie.participants.contains(app.user) %}
+                            ✖️
+                        {% endif %}
+                    </td>
                     <td>{{ sortie.organisateur.Firstname }} {{ sortie.organisateur.Lastname }}</td>
+                    <td>
+                        {% if sortie.etat.libelle == 'Passée' %}
+                            Sortie passée
+{#                        {% else %}#}
+{#                            Aucune sortie passée#}
+                        {% endif %}
+                    </td>
                 </tr>
             {% else %}
                 <tr>

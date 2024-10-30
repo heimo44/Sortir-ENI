@@ -17,7 +17,7 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByFilters($campus, $isOrganizer, $user)
+    public function findByFilters($campus, $isOrganizer, $user, $isInscrit, $isPassed): array
     {
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.organisateur', 'o')
@@ -32,6 +32,16 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-            return $qb->getQuery()->getResult();
+        if ($isInscrit) {
+            $qb->innerJoin('s.participants', 'p')
+                ->andWhere('p.id = :userId')
+                ->setParameter('userId', $user->getId());
+        }
+        if ($isPassed) {
+            $qb->andWhere('e.libelle = :etatLibelle')
+                ->setParameter('etatLibelle', 'Passée');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
