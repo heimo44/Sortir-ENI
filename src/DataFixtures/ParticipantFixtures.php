@@ -29,10 +29,11 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $user->setFirstName("Lionel");
         $user->setTelephone("0606060606");
         $user->setPassword($this->passwordHarsher->hashPassword($user, "123456123456!!"));
-        $user->setActif(true);
+        $user->setIsActif(true);
         $user->setRoles(['ROLE_ADMIN']);
         // Attribuer un campus aléatoire à l'admin
         $randomCampus = $this->getReference('campus_' . $this->campusList[array_rand($this->campusList)]);
+
         $user->setCampus($randomCampus);
         $manager->persist($user);
         // Création des utilisateurs
@@ -53,7 +54,7 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
                 $user->setEmail($email);
                 $user->setTelephone($faker->numerify('06########'));
                 $user->setPassword($this->passwordHarsher->hashPassword($user, "123456"));
-                $user->setActif(true);
+                $user->setIsActif($faker->boolean(60));
                 $user->setRoles(['ROLE_USER']);
 
                 // Attribuer un campus aléatoire à l'utilisateur

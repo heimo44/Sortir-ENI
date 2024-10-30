@@ -69,7 +69,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password;
 
     #[ORM\Column]
-    private ?bool $actif = null;
+    private ?bool $isActif = true;
+
+    public function getIsActif(): ?bool
+    {
+        return $this->isActif;
+    }
+
+    public function setIsActif(?bool $isActif): void
+    {
+        $this->isActif = $isActif;
+    }
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
     private ?Campus $campus = null;
@@ -98,10 +108,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $profileImageFilename = null;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $failedAttempts = 0;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $lockedUntil = null;
+
     public function __construct()
     {
         $this->inscrit = new ArrayCollection();
         $this->organisateur = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -156,18 +173,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
-    public function isActif(): ?bool
-    {
-        return $this->actif;
-    }
 
-    public function setActif(bool $actif): static
-    {
-        $this->actif = $actif;
 
-        return $this;
-    }
 
     public function getCampus(): ?Campus
     {
@@ -331,6 +338,27 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfileImageFilename(?string $profileImageFilename): self
     {
         $this->profileImageFilename = $profileImageFilename;
+        return $this;
+    }
+    public function getFailedAttempts(): ?int
+    {
+        return $this->failedAttempts;
+    }
+
+    public function setFailedAttempts(?int $failedAttempts): self
+    {
+        $this->failedAttempts = $failedAttempts;
+        return $this;
+    }
+
+    public function getLockedUntil(): ?\DateTimeInterface
+    {
+        return $this->lockedUntil;
+    }
+
+    public function setLockedUntil(?\DateTimeInterface $lockedUntil): self
+    {
+        $this->lockedUntil = $lockedUntil;
         return $this;
     }
 }
