@@ -99,6 +99,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, nullable: true)]
     private ?string $pseudo = null;
 
+    #[Assert\Length(
+        min: 8,
+        max: 64,
+        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le mot de passe ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Regex(
+        pattern: "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/",
+        message: "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial."
+    )]
     #[ORM\Column(length: 4000, nullable: true)]
     private ?string $newPassword = null;
 

@@ -3,7 +3,6 @@
 {% block title %}
     {% if participant.pseudo is null %}
         {{ participant.Lastname }} | Edition
-
     {% else %}
         {{ participant.pseudo }} | Edition
     {% endif %}
@@ -20,16 +19,33 @@
 
     <h1 style="text-align: center"> Éditer mon profil </h1>
     {{ form_start(participantForm) }}
-    {# profile.html.twig #}
-    {{ form_row(participantForm.pseudo) }}
-    {{ form_row(participantForm.Lastname) }}
-    {{ form_row(participantForm.Firstname) }}
-    {{ form_row(participantForm.telephone) }}
-    {{ form_row(participantForm.email) }}
-    {{ form_row(participantForm.newPassword) }}
-    {{ form_row(participantForm.newPasswordConfirmation) }}
-    {{ form_row(participantForm.campus) }}
-    <button type="submit" class="btn btn-primary">Enregistrer</button>
-    <a href="{{ path('participant_show', {'id': app.user.id}) }}"><button type="button" class="btn btn-primary">Annuler</button></a>
+        <div class="container mb-5">
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.profileImageFilename) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.pseudo) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.Lastname) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.Firstname) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.telephone) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.email) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.newPassword) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.newPasswordConfirmation) }}
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{{ path('participant_show', {'id': app.user.id}) }}" class="btn btn-secondary">Annuler</a>
+        </div>
     {{ form_end(participantForm) }}
 {% endblock %}

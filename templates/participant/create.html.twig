@@ -15,14 +15,32 @@
 
     <h1 style="text-align: center"> Création de compte </h1>
     {{ form_start(participantForm) }}
-    {{ form_row(participantForm.Lastname) }}
-    {{ form_row(participantForm.Firstname) }}
-    {{ form_row(participantForm.telephone) }}
-    {{ form_row(participantForm.email) }}
-    {{ form_row(participantForm.newPassword, {'label' : 'Mot de passe (si vide, le mot de passe par défaut sera appliqué)'}) }}
-    {{ form_row(participantForm.campus) }}
-    {{ form_row(participantForm.roles) }}
-    <button type="submit" class="btn btn-primary">Créer</button>
-    <a href="{{ path('main_accueil') }}"><button type="button" class="btn btn-primary">Annuler</button></a>
+        <div class="container mb-5">
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.Lastname) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.Firstname) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.telephone) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.email) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.newPassword, {'label': 'Mot de passe (si vide, le mot de passe par défaut sera appliqué)'}) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.campus, {'label': 'Campus <span class="red-text">*</span>', 'label_html': true}) }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(participantForm.roles) }}
+            </div>
+            <div class="form-group mb-3">
+                <button type="submit" class="btn btn-primary">Créer</button>
+                <a href="{{ path('main_accueil') }}" class="btn btn-secondary">Annuler</a>
+            </div>
+        </div>
     {{ form_end(participantForm) }}
 {% endblock %}
