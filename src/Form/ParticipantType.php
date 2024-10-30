@@ -43,11 +43,6 @@ class ParticipantType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'nom',
             ])
-            ->add('image', FileType::class, [
-                'label' => '(JPEG, PNG)',
-                'mapped' => false, // We'll handle the file upload manually
-                'required' => false,
-            ])
         ;
 
         if ($options['user_creation']) {
@@ -75,6 +70,11 @@ class ParticipantType extends AbstractType
                     'attr' => [
                         'mapped' => false,
                     ]
+                ])
+                ->add('profileImageFilename', FileType::class, [
+                    'label' => '(JPEG, PNG)',
+                    'mapped' => false, // We'll handle the file upload manually
+                    'required' => false,
                 ]);
         }
     }

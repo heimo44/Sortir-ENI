@@ -18,14 +18,22 @@
     {% endfor %}
 
     {% if participant.pseudo is null %}
-        <h1 class="h1" style="text-align: center">Information | {{ participant.Firstname }} {{ participant.Lastname }}</h1>
-    {% else %}
-        <h1 class="h1" style="text-align: center">Information | {{ participant.pseudo }}</h1>
-    {% endif %}
 
-    <div class="container-profile" style="height: 60vh;">
+        <h1 class="pseudo" style="text-align: center">{{ participant.Firstname }} {{ participant.Lastname }}</h1>
+    {% else %}
+        <h1 class="pseudo" style="text-align: center">{{ participant.pseudo }}</h1>
+    {% endif %}
+    <div class="container-profile" style="height: 50vh;">
+        <div style="display: flex; align-items: center; justify-content: flex-start;">
+            <div class="photo-profile">
+                <img src="{{ asset('uploads/images/' ~ participant.profileImageFilename) }}"
+                     alt="Profile Image"
+                     style="width: 150px; height: 150px; object-fit: cover;">
+            </div>
+    <div class="container-profile" >
         <table class="table-profile">
             <tbody>
+
             <tr>
                 <td class="text-end" style="width: 50%;">Prénom :</td>
                 <td style="width: 50%;">{{ participant.Firstname }}</td>
@@ -55,13 +63,14 @@
             </tbody>
         </table>
 
+
         {% if app.user and (app.user.id == participant.id) %}
             <div class="mb-3 text-center">
                 <a href="{{ path('participant_edit', {'id': app.user.id}) }}">
-                    <button type="button" class="btn btn-primary" style="margin-top: 20px;">Éditer</button>
+                    <button type="button" class="btn btn-primary" style=" margin-right: 200px;">Éditer</button>
                 </a>
             </div>
         {% endif %}
-
+        </div>
     </div>
 {% endblock %}

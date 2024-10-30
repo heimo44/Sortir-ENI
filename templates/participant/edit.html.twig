@@ -3,6 +3,7 @@
 {% block title %}
     {% if participant.pseudo is null %}
         {{ participant.Lastname }} | Edition
+
     {% else %}
         {{ participant.pseudo }} | Edition
     {% endif %}
@@ -19,7 +20,7 @@
 
     <h1 style="text-align: center"> Éditer mon profil </h1>
     {{ form_start(participantForm) }}
-{#    {{ form_row(participantForm.profileImage) }}#}
+    {# profile.html.twig #}
     {{ form_row(participantForm.pseudo) }}
     {{ form_row(participantForm.Lastname) }}
     {{ form_row(participantForm.Firstname) }}
