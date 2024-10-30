@@ -119,7 +119,11 @@ class ParticipantController extends AbstractController
             }
 
             $role = $participantForm->get('roles')->getData();
-            $participant->setRoles($role);
+            if($role == ['ROLE_ADMIN']){
+                $participant->setRoles(['ROLE_ADMIN']);
+            } else {
+                $participant->setRoles(['ROLE_USER']);
+            }
 
             $participant->setNewPassword(null);
 
