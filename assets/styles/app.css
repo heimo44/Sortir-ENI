@@ -103,9 +103,6 @@ body {
     text-align: center;
     user-select: none;
 }
-.photo-profile img {
-    padding-left: 2%;
-}
 .table-profile {
     background-color: rgba(245, 245, 245, 0.3);
     border-radius: 5px;
@@ -113,6 +110,13 @@ body {
 }
 .table-profile td {
     padding: 10px;
+}
+.or-divider {
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 0 15px;
 }
 
 .width-tab {

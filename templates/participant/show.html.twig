@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if participant.pseudo is null %}
-        {{ participant.Lastname }} | Affichage
+        Sortir-ENI | {{ participant.Firstname }} {{ participant.Lastname }}
     {% else %}
-        {{ participant.pseudo }} | Affichage
+        Sortir-ENI | {{ participant.pseudo }}
     {% endif %}
 {% endblock %}
 
@@ -17,7 +17,7 @@
         </div>
     {% endfor %}
 
-    <div class="text-center mb-4">
+    <div class="text-center mt-2 mb-4">
         <h1>
             {% set displayName = participant.pseudo is not null ? participant.pseudo : participant.Firstname ~ ' ' ~ participant.Lastname %}
             {{ displayName }}
@@ -75,7 +75,7 @@
     </div>
 
     {% if app.user and (app.user.id == participant.id) %}
-        <div class="text-center">
+        <div class="text-center mt-1">
             <a href="{{ path('participant_edit', {'id': app.user.id}) }}">
                 <button type="button" class="btn btn-primary">Éditer mon profil</button>
             </a>
@@ -83,13 +83,14 @@
     {% endif %}
 
     {% if app.user.roles[0] == 'ROLE_ADMIN' and app.user.id != participant.id and participant.roles[0] != 'ROLE_ADMIN'  %}
-        <div class="mt-3 text-center">
+        <div class="text-center mt-1">
             <form action="{{ path('participant_show', { 'id': participant.id }) }}" method="POST">
-                <input type="hidden" name="actif" value="{{ participant.isActif ? '0' : '1' }}">
+                <input type="hidden" name="isActif" value="{{ participant.isActif ? '0' : '1' }}">
                 <button type="submit" class="btn {{ participant.isActif ? 'btn-danger' : 'btn-success' }}">
                     {{ participant.isActif ? 'Désactiver' : 'Activer' }}
                 </button>
             </form>
+            <a href="{{ path('participant_index') }}" class="btn btn-primary mt-2 mb-5">Retour à la liste</a>
         </div>
     {% endif %}
 
