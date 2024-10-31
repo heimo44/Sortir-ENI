@@ -11,7 +11,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create("fr_FR");
 
         for ($i = 0; $i < 10; $i++) {
             // Création d'une instance vide
@@ -41,7 +41,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
                 $sortie->setNbInscriptionsMax($faker->numberBetween(10, 30));
 
-                $sortie->setInfosSortie($faker->sentence(20));
+                $sortie->setInfosSortie($faker->text(200));
 
                 // Attribue un état aléatoire à la sortie
                 $etat = $this->getReference('etat_' . $faker->randomElement(["Créée", "Ouverte", "Clôturée", "Activité en cours", "Passée", "Annulée"]));
