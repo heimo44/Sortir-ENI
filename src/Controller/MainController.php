@@ -29,19 +29,28 @@ class MainController extends AbstractController
 
         // Initialiser les critères de recherche
         $criteria = $accueilForm->getData() ?? [];
-        $criteria['campus'] = $criteria['campus'] ?? $campus; // Définit le campus par défaut si absent
 
-        // Ajouter l'utilisateur pour le filtre d'organisateur si nécessaire
+        // Récupérer tous les filtres
         $isOrganizer = $criteria['organisateur'] ?? false;
-
-        // Récupération du critère d'inscription
         $isInscrit = $criteria['sortie_inscrit'] ?? false;
+        $isNonInscrit = $criteria['sortie_non_inscrit'] ?? false;
+        $isPassed = $criteria['sortie_passee'] ?? false;
+        $searchTerm = $criteria['nom_sortie'] ?? null;
+        $dateDebut = $criteria['date_debut'] ?? null;
+        $dateFin = $criteria['date_fin'] ?? null;
 
-        // Récupération du critère sortie passée
-        $isPassed = $criteria['sortie_passée'] ?? false;
-
-        // Récupérer les sorties en fonction des critères
-        $sorties = $sortieRepository->findByFilters($criteria['campus'], $isOrganizer, $user, $isInscrit, $isPassed);
+        // Récupérer les sorties avec tous les filtres
+        $sorties = $sortieRepository->findByFilters(
+            $campus,
+            $isOrganizer,
+            $isInscrit,
+            $isNonInscrit,
+            $isPassed,
+            $user,
+            $searchTerm,
+            $dateDebut,
+            $dateFin
+        );
 
         return $this->render('main/accueil.html.twig', [
             'accueilForm' => $accueilForm->createView(),
