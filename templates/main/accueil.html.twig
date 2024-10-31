@@ -80,7 +80,7 @@
 </div>
 {{ form_end(accueilForm) }}
 
-    <div class="mt-5">
+    <div class="table-container mt-3">
         <table class="table table-striped">
             <thead>
             <tr>
@@ -105,11 +105,6 @@
                     <td class="d-none d-md-table-cell">{{ sortie.etat.libelle }}</td>
                     <td class="d-table-cell d-md-none">{{ sortie.lieu.ville.nom}}</td>
                     <td>
-{#                        {% for participant in sortie.participants %}#}
-{#                            {{ participant.firstname }} {{ participant.lastname }}<br>#}
-{#                        {% else %}#}
-{#                            Aucun inscrit#}
-{#                        {% endfor %}#}
                         {% if sortie.participants.contains(app.user) %}
                             ✖️
                         {% endif %}
@@ -144,7 +139,9 @@
             </tbody>
         </table>
     </div>
+
     <div class="column-2 d-none d-md-block">
-    <button class="btn btn-primary p-2"><a href="{{ path('app_sortie_new') }}" class="text-decoration-none text-white">Créer une sortie</a></button>
+        <button class="btn btn-primary p-2 mt-3 mb-5"><a href="{{ path('app_sortie_new') }}" class="text-decoration-none text-white">Créer une sortie</a></button>
     <div class="column-2 d-none d-md-block">
+
 {% endblock %}
