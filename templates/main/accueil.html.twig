@@ -111,14 +111,27 @@
                             ✖️
                         {% endif %}
                     </td>
-                    <td>{{ sortie.organisateur.Firstname }} {{ sortie.organisateur.Lastname }}</td>
+                    <td><a href="{{ path('participant_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.Firstname }} {{ sortie.organisateur.Lastname }}</a></td>
                     <td>
-{#                        {% if sortie.etat.libelle == 'Passée' %}#}
-{#                            Sortie passée#}
-{#                        {% else %}#}
-{#                            Aucune sortie passée#}
-{#                        {% endif %}#}
-                    </td>
+                        {% if sortie.etat.libelle == 'Passée' %}
+                            Sortie passée
+                        {% elseif sortie.etat.libelle == 'Créée' and sortie.organisateur.id == user.id %}
+                            <a class="btn btn-primary" href="{{ path('app_sortie_publish', {'id': sortie.id}) }}">Publier</a>
+                            <a class="btn btn-secondary" href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">Modifier</a>
+                        {% elseif sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Créée' or sortie.etat.libelle == 'Activité en cours' or sortie.etat.libelle == 'Clôturée'%}
+                            {% if sortie.etat.libelle == 'Ouverte' and sortie.organisateur.id != user.id %}
+                                {% if sortie.participants.contains(app.user) %}
+                                    <a class="btn btn-danger" href="{{ path('app_sortie_remove_participant', {'id': sortie.id}) }}">Désister</a>
+                                {% else %}
+                                    <a class="btn btn-primary" href="{{ path('app_sortie_add_participant', {'id': sortie.id}) }}">Inscrire</a>
+                                {% endif %}
+                            {% endif %}
+                            <a class="btn btn-secondary" href="{{ path('app_sortie_show', {'id': sortie.id}) }}">Afficher</a>
+                            {% if sortie.etat.libelle == 'Ouverte' and  sortie.organisateur.id == user.id %}
+                                <a class="btn btn-danger" href="{{ path('app_sortie_cancel', {'id': sortie.id}) }}">Annuler</a>
+                            {% endif %}
+                        {% endif %}
+                            </td>
                 </tr>
             {% else %}
                 <tr>
