@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CityController!{% endblock %}
+
+{% block body %}
+
+{#    <h1>Liste des Villes</h1>#}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ville</th>
+                <th>Code postal</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for city in cities %}
+            <tr>
+                <td>{{ city.nom }}</td>
+                <td>{{ city.codesPostaux[0] }}</td>
+                <td>Mes actions</td>
+            </tr>
+        {% endfor %}
+        {{ form_start(form)}}
+
+
+        <tr>
+            <td>{{ form_widget(form.nom) }}</td>
+            <td>{{ form_widget(form.codePostal) }}</td>
+            <td><button type="submit" class="btn btn-primary">Ajouter une ville</button></td>
+        </tr>
+        {{ form_end(form) }}
+        </tbody>
+    </table>
+
+
+{% endblock %}
+
