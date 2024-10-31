@@ -6,23 +6,24 @@
 
 {% block body %}
     <div class="d-flex flex-column float-end pe-2 fw-bold" >
-        <div>
+        <div class="d-none d-md-table-cell">
             Date du jour : {{ currentDate|date('d/m/Y') }}
         </div>
         {% if user %}
-        <div>
+        <div class="d-none d-md-table-cell">
             Participant : {{ user.Lastname }} {{ user.Firstname }}
         </div>
         {% endif %}
     </div>
     <div class="mt-5">
-        <h5>Filtrer les sorties</h5>
+        <h5 class="d-none d-md-table-cell">Filtrer les sorties</h5>
+        <h3 class="d-table-cell d-md-none">Mes Sorties</h3>
     </div>
 
     {{ form_start(accueilForm) }}
     <div>
         <div class="d-flex justify-content-around">
-            <div class="column-1">
+            <div class="column-1 d-none d-md-block">
                 <!-- Label et input pour le campus côte à côte -->
                 <div class="d-flex align-items-center mb-1">
                     {{ form_label(accueilForm.campus, 'Campus', {'label_attr': {'class': 'me-5'}}) }} <!-- Le label Campus -->
@@ -49,7 +50,7 @@
                 </div>
         </div>
 
-        <div class="column-2">
+        <div class="column-2 d-none d-md-block">
             <div>
                 {{ form_label(accueilForm.organisateur) }}
                 {{ form_widget(accueilForm.organisateur) }}
@@ -71,8 +72,8 @@
             </div>
         </div>
 
-        <div class="d-flex align-items-center column-3">
-            {{ form_widget(accueilForm.rechercher, {'attr': {'class': 'btn btn-primary p-4'}}) }}
+        <div class="d-flex align-items-center column-3 d-none d-md-block">
+            {{ form_widget(accueilForm.rechercher, {'attr': {'class': 'btn btn-primary p-4 '}}) }}
         </div>
 
     </div>
@@ -85,12 +86,13 @@
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
-                <th>Clôture</th>
-                <th>Inscrits/Places</th>
-                <th>État</th>
-                <th>Inscrits</th>
-                <th>Organisateur</th>
-                <th>Actions</th>
+                <th class="d-none d-md-table-cell">Clôture</th>
+                <th class="d-none d-md-table-cell" >Inscrits/Places</th>
+                <th class="d-none d-md-table-cell">État</th>
+                <th class="d-none d-md-table-cell">Inscrits</th>
+                <th class="d-none d-md-table-cell">Organisateur</th>
+                <th class="d-none d-md-table-cell">Actions</th>
+                <th class="d-table-cell d-md-none">Lieu</th>
             </tr>
             </thead>
             <tbody>
@@ -98,9 +100,10 @@
                 <tr>
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
-                    <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
-                    <td>{{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</td>
-                    <td>{{ sortie.etat.libelle }}</td>
+                    <td class="d-none d-md-table-cell">{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
+                    <td class="d-none d-md-table-cell">{{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</td>
+                    <td class="d-none d-md-table-cell">{{ sortie.etat.libelle }}</td>
+                    <td class="d-table-cell d-md-none">{{ sortie.lieu.ville.nom}}</td>
                     <td>
 {#                        {% for participant in sortie.participants %}#}
 {#                            {{ participant.firstname }} {{ participant.lastname }}<br>#}
@@ -111,7 +114,7 @@
                             ✖️
                         {% endif %}
                     </td>
-                    <td><a href="{{ path('participant_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.Firstname }} {{ sortie.organisateur.Lastname }}</a></td>
+                    <td class="d-none d-md-table-cell"><a href="{{ path('participant_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.Firstname }} {{ sortie.organisateur.Lastname }}</a></td>
                     <td>
                         {% if sortie.etat.libelle == 'Passée' %}
                             Sortie passée
@@ -131,7 +134,7 @@
                                 <a class="btn btn-danger" href="{{ path('app_sortie_cancel', {'id': sortie.id}) }}">Annuler</a>
                             {% endif %}
                         {% endif %}
-                            </td>
+                    </td>
                 </tr>
             {% else %}
                 <tr>
@@ -141,7 +144,7 @@
             </tbody>
         </table>
     </div>
-
+    <div class="column-2 d-none d-md-block">
     <button class="btn btn-primary p-2"><a href="{{ path('app_sortie_new') }}" class="text-decoration-none text-white">Créer une sortie</a></button>
-
+    <div class="column-2 d-none d-md-block">
 {% endblock %}

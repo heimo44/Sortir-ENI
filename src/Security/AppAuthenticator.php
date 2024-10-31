@@ -46,7 +46,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
             $request->getSession()->getFlashBag()->add('error', 'Votre compte est inactif. Veuillez contacter l\'administrateur.');
 
             // Vous pouvez retourner null ou une réponse de redirection pour terminer le processus
-            throw new AuthenticationException('Votre compte est inactif.'); // Ceci arrêtera le processus d'authentification
+           throw new AuthenticationException('Votre compte est inactif.'); // Ceci arrêtera le processus d'authentification
         }
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
