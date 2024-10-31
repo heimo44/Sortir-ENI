@@ -1,12 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    {% if participant.pseudo is null %}
-        {{ participant.Lastname }} | Edition
-    {% else %}
-        {{ participant.pseudo }} | Edition
-    {% endif %}
-{% endblock %}
+{% block title %}Sortir-ENI | Édition{% endblock %}
 
 {% block body %}
     {% for label, messages in app.flashes %}
@@ -17,7 +11,7 @@
         </div>
     {% endfor %}
 
-    <h1 style="text-align: center"> Éditer mon profil </h1>
+    <h1 class="text-center mt-2"> Éditer mon profil </h1>
     {{ form_start(participantForm) }}
         <div class="container mb-5">
             <div class="form-group mb-3">

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Créer un compte
+    Sortir-ENI | Créer un compte
 {% endblock %}
 
 {% block body %}
@@ -13,9 +13,29 @@
         </div>
     {% endfor %}
 
-    <h1 style="text-align: center"> Création de compte </h1>
+    <h1 class="text-center mt-2 mb-5"> Création de compte </h1>
+
+    <form action="{{ path('participant_upload_csv') }}" method="post" enctype="multipart/form-data">
+        <div class="container mb-4">
+            <div class="form-group mb-3">
+                <div class="custom-file mb-3">
+                    <div class="text-center mb-2">
+                        <label for="csv_file" class="form-label mb-4" style="font-size: 1.3rem;">Téléchargez votre fichier CSV</label>
+                    </div>
+                    <input type="file" name="csv_file" id="csv_file" class="custom-file-input form-control" accept=".csv">
+                    <button type="submit" class="btn btn-primary mt-3">Importer</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center my-4">
+        <span class="or-divider">----------- ou -----------</span>
+    </div>
+
     {{ form_start(participantForm) }}
-        <div class="container mb-5">
+        <div class="container mb-5 mt-4">
+            <div class="form-label text-center mb-3" style="font-size: 1.3rem;">Créez manuellement un compte</div>
             <div class="form-group mb-3">
                 {{ form_row(participantForm.Lastname) }}
             </div>

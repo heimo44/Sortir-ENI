@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\ParticipantType;
+use App\Repository\CampusRepository;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,17 +38,22 @@ class ParticipantController extends AbstractController
         $participant = $participantRepository->find($id);
 
         if(!$participant){
-            $this->addFlash('danger', "Le participant n'existe pas.");
-            return $this->redirectToRoute('main_accueil');
+            $this->addFlash('danger', "Cet utilisateur n'existe pas.");
+            return $this->redirectToRoute('participant_index');
         }
 
         if ($request->isMethod('POST')) {
-            $actif = $request->request->get('actif');
-            $participant->setIsActif($actif === '1');
+            $isActif = $request->request->get('isActif');
+            $participant->setIsActif($isActif === '1');
             $entityManager->persist($participant);
             $entityManager->flush();
 
-            $this->addFlash('success', "Le statut du participant a été mis à jour avec succès.");
+            // Include the changed value in the flash message
+            $statusMessage = $isActif
+                ? "L'utilisateur {$participant->getFirstname()} {$participant->getLastname()} est maintenant actif."
+                : "L'utilisateur {$participant->getFirstname()} {$participant->getLastname()} est maintenant inactif.";
+            $this->addFlash('success', $statusMessage);
+
             return $this->redirectToRoute('participant_show', ['id' => $participant->getId()]);
         }
 
@@ -62,7 +68,7 @@ class ParticipantController extends AbstractController
         $participant = $participantRepository->find($id);
 
         if (!$participant) {
-            $this->addFlash('danger', "Le participant n'existe pas.");
+            $this->addFlash('danger', "Cet utilisateur n'existe pas.");
             return $this->redirectToRoute('main_accueil');
         }
 
@@ -97,10 +103,10 @@ class ParticipantController extends AbstractController
             $em->flush();
 
             if($newPassword !== ''){
-                $this->addFlash("success", "Utilisateur mis à jour, veuillez vous reconnecter !");
+                $this->addFlash("success", "Mot de passe mis à jour, veuillez vous reconnecter !");
                 return $this->redirectToRoute('app_logout', ['id' => $participant->getId()]);
             } else {
-                $this->addFlash("success", "Utilisateur mis à jour !");
+                $this->addFlash("success", "Informations mises à jour !");
                 return $this->redirectToRoute('participant_show', ['id' => $participant->getId()]);
             }
         }
@@ -145,13 +151,108 @@ class ParticipantController extends AbstractController
             $em->flush();
 
             $this->addFlash("success", "Compte créé avec succès !");
-            return $this->redirectToRoute('participant_index');
+            return $this->redirectToRoute('participant_show', ['id' => $participant->getId()]);
         }
 
         return $this->render('participant/create.html.twig', [
             'participant' => $participant,
             "participantForm" => $participantForm->createView(),
         ]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/upload-csv', name: 'participant_upload_csv', methods: ['POST'])]
+    public function uploadCsv(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher, CampusRepository $campusRepository): Response
+    {
+        $file = $request->files->get('csv_file');
+
+        if ($file) {
+            $handle = fopen($file->getPathname(), 'r');
+            if ($handle !== false) {
+                $header = fgetcsv($handle);
+                $errorMessages = [];
+                $lineNumber = 1;
+
+                while (($data = fgetcsv($handle)) !== false) {
+                    $userData = array_combine($header, $data);
+
+                    $lineNumber++;
+
+                    // Vérification de valeurs manquantes ou rôle invalide
+                    $validRoles = ['ROLE_USER', 'ROLE_ADMIN'];
+                    if (empty($userData['lastname']) ||
+                        empty($userData['firstname']) ||
+                        empty($userData['telephone']) ||
+                        empty($userData['email']) ||
+                        empty($userData['campus']) ||
+                        empty($userData['roles']) ||
+                        !in_array($userData['roles'], $validRoles)) {
+
+                        $errorMessage = "Erreur : Données manquantes pour la ligne $lineNumber sur : ";
+
+                        $missingFields = [];
+                        if (empty($userData['lastname'])) $missingFields[] = 'Nom';
+                        if (empty($userData['firstname'])) $missingFields[] = 'Prénom';
+                        if (empty($userData['telephone'])) $missingFields[] = 'Numéro de téléphone';
+                        if (empty($userData['email'])) $missingFields[] = 'Email';
+                        if (empty($userData['campus'])) $missingFields[] = 'Campus';
+                        if (!in_array($userData['roles'], $validRoles)) $missingFields[] = 'Rôle';
+
+                        if (!empty($missingFields)) {
+                            $errorMessage .= implode(", ", $missingFields);
+                        }
+
+                        $errorMessages[] = $errorMessage;
+                        continue; // Passe ce participant
+                    }
+
+                    // Vérification de l'unicité de email
+                    $existingParticipant = $em->getRepository(Participant::class)->findOneBy(['email' => $userData['email']]);
+                    if ($existingParticipant) {
+                        $errorMessages[] = "Erreur : L'email '{$userData['email']}' sur la ligne $lineNumber existe déjà.";
+                        continue; // Passe ce participant
+                    }
+
+                    $participant = new Participant();
+                    $participant->setLastname($userData['lastname']);
+                    $participant->setFirstname($userData['firstname']);
+                    $participant->setTelephone($userData['telephone']);
+                    $participant->setEmail($userData['email']);
+                    $hashedPassword = $userPasswordHasher->hashPassword($participant, '123456');
+                    $participant->setPassword($hashedPassword);
+                    $participant->setRoles([$userData['roles']]);
+                    $participant->setIsActif(true);
+
+                    $campusId = (int)$userData['campus'];
+                    $campus = $campusRepository->find($campusId);
+                    if ($campus) {
+                        $participant->setCampus($campus);
+                    } else {
+                        $participant->setCampus(null);
+                    }
+
+                    $em->persist($participant);
+                }
+
+                fclose($handle);
+                $em->flush();
+
+                // Contrôle les erreurs
+                if (!empty($errorMessages)) {
+                    foreach ($errorMessages as $errorMessage) {
+                        $this->addFlash("danger", $errorMessage);
+                    }
+                    $this->addFlash("success", "Les autres utilisateurs ont été importés avec succès !");
+                    return $this->redirectToRoute('participant_create');
+                }
+
+                $this->addFlash("success", "Les utilisateurs ont été importés avec succès !");
+                return $this->redirectToRoute('participant_create');
+            }
+        }
+
+        $this->addFlash("error", "Erreur sur le téléchargement du fichier CSV.");
+        return $this->redirectToRoute('participant_create');
     }
 
     private function handleProfileImageUpload(Participant $participant, $form): void
@@ -179,7 +280,7 @@ class ParticipantController extends AbstractController
 
                 $participant->setProfileImageFilename($newFilename);
             } catch (FileException $exception) {
-                $this->addFlash('danger', 'There was an error uploading your profile image');
+                $this->addFlash('danger', 'Erreur sur le téléchagement de l\'image');
             }
         }
     }
